@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>CMCC
+   <modules>
+       <module>TestNote
+           <state>false</state>
+           <Functions>
+               <Function>add
+                   <state>false</state>
+                   <Message>新增文件失败:没有权限</Message>
+               </Function>
+               <Function>delete
+                   <state>true</state>
+                   <Message>删除文件</Message>
+               </Function>
+               <Function>modify
+                   <state>true</state>
+                   <Message>修改文件</Message>
+               </Function>
+           </Functions>
+       </module>
+       <module>TestCalendar
+           <state>true</state>
+           <Functions>
+               <Function>add
+                   <state>true</state>
+                   <Message>新增文件</Message>
+               </Function>
+               <Function>delete
+                   <state>true</state>
+                   <Message>删除文件</Message>
+               </Function>
+               <Function>modify
+                   <state>true</state>
+                   <Message>修改文件</Message>
+               </Function>
+           </Functions>
+       </module>
+   </modules>
+</project>
+
+
+

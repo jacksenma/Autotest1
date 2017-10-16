@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nj.ts.autotest.activity.TestModuleActivity">
+
+    <Button
+        android:id="@+id/show_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="显示测试结果列表"/>
+
+    <com.nj.ts.autotest.view.TabView
+        android:id="@+id/tabView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        app:imageViewTextViewMargin="2dip"
+        app:tab_imageViewHeight="30dip"
+        app:tab_imageViewWidth="30dip"
+        app:tab_itemSelBackground="@drawable/tab_item_sel_bg"
+        app:tab_itemUnSelBackground="@drawable/tab_item_bg"
+        app:tab_tabViewBackgroundColor="@color/white"
+        app:tab_tabViewGravity="left"
+        app:tab_tabViewHeight="80dip"
+        app:tab_textViewSize="14sp" />
+
+</android.support.constraint.ConstraintLayout>
