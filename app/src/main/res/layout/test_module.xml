@@ -25,6 +25,9 @@
         app:tab_tabViewBackgroundColor="@color/white"
         app:tab_tabViewGravity="left"
         app:tab_tabViewHeight="80dip"
-        app:tab_textViewSize="14sp" />
+        app:tab_textViewSize="14sp"
+        />
+    <!--app:tab_itemSelBackground="@drawable/tab_item_sel_bg"-->
+    <!--app:tab_itemUnSelBackground="@drawable/tab_item_bg"-->
 
 </android.support.constraint.ConstraintLayout>

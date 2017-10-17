@@ -1,11 +1,14 @@
 package com.nj.ts.autotest.activity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ts.autotest.R;
+import com.nj.ts.autotest.adapter.CheckboxAdapter;
 import com.nj.ts.autotest.adapter.SpinnerAdapter;
 import com.nj.ts.autotest.entity.Config;
 import com.nj.ts.autotest.entity.Module;
@@ -34,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +70,6 @@ public class MainActivity extends AppCompatActivity{
         setContentView(R.layout.activity_main);
         configs = initConfig();
         initProjectName(configs);
-
     }
 
     private void initView(Config config) {
@@ -78,15 +82,14 @@ public class MainActivity extends AppCompatActivity{
         mTextView = (TextView)findViewById(R.id.main_chosen_modules);
         String result = "";
         for(int i = 0;i < yourChoices.size();i++){
-//            if(i == 0)
-//                result += "已选模块如下：\n";
+            if(i == 0)
+                result += "已选模块如下：\n";
             result+=yourChoices.get(i).getName();
             if(i !=yourChoices.size()-1)
                 result += " , ";
         }
         if(yourChoices.size() == 0)
-//            result = "还未选择任何模块";
-            result = "Nothing chosen";
+            result = "还未选择任何模块";
         mTextView.setText(result);
     }
 
@@ -242,8 +245,7 @@ public class MainActivity extends AppCompatActivity{
                     bl[j] = false;
                 }
                 //换项目时清除已经选择的模块信息（mTextView和yourChoices）
-//                mTextView.setText("还未选择任何模块");
-                mTextView.setText("Nothing chosen");
+                mTextView.setText("还未选择任何模块");
                 yourChoices.clear();
             }
 
@@ -294,7 +296,7 @@ public class MainActivity extends AppCompatActivity{
             ArrayList<Module> modules = (ArrayList<Module>) config.getModule();
             try {
                 for(int i=0;i<modules.size();i++){
-                    String path= Constant.TEST_PATH+config.getProjectName()+".";
+                    String path=Constant.TEST_PATH+config.getProjectName()+".";
                     String name = modules.get(i).getName();
                     Log.d(TAG, "testConfig: "+path+"1");
                     Class c = Class.forName(path+name);

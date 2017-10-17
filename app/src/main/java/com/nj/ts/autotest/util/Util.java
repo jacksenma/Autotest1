@@ -95,7 +95,7 @@ public class Util {
             serializer.endTag("","modules");
             serializer.endTag("","project");
             serializer.endDocument();
-            android.util.Log.d(TAG, "createResultXML: "+writer.toString());
+            Log.d(TAG, "createResultXML: "+writer.toString());
 //            return writer.toString();
         }
         catch(Exception e)

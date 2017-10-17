@@ -1,6 +1,7 @@
 package com.nj.ts.autotest.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,7 +44,7 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
         text.setTypeface(typeFace);
 
         //text.setBackgroundColor(Color.GREEN);
-        //text.setTextColor(Color.WHITE);
+        text.setTextColor(Color.WHITE);
         return convertView;
     }
 }

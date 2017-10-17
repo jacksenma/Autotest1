@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/gray_symbol" >
+    android:background="@color/gray_symbol"
+    >
 
     <GridView
         android:id="@+id/test_content"
@@ -15,5 +16,6 @@
         android:verticalSpacing="10dp"
         android:horizontalSpacing="10dp"
         android:stretchMode="columnWidth"
-        android:gravity="center" />
+        android:gravity="center"
+        />
 </LinearLayout>
