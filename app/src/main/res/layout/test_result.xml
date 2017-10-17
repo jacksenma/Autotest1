@@ -5,21 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/newbg2"
     tools:context="com.nj.ts.autotest.activity.TestResultActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:padding="10dp"
-        android:text="Test Result"
-        android:textSize="24sp" />
+        android:text="测试结果"
+        android:textSize="24sp"
+        android:textColor="@color/lightsalmon"
+        />
 
     <TextView
         android:id="@+id/project"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:textSize="24sp" />
+        android:textSize="32sp"
+        android:textColor="@color/white"
+        android:layout_gravity="center_horizontal"
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,7 +38,7 @@
             android:id="@+id/retest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab_item_bg"
+            android:background="@color/green_300"
             android:text="重测"
             android:layout_alignParentLeft="true"/>
 
@@ -39,8 +46,8 @@
             android:id="@+id/test_alone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab_item_bg"
-            android:text="单独测"
+            android:background="@color/green_300"
+            android:text="单测"
             android:layout_alignParentRight="true" />
     </RelativeLayout>
 

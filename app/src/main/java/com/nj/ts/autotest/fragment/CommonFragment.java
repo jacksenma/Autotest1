@@ -215,7 +215,7 @@ public class CommonFragment extends Fragment {
                 moduleText.setTextColor(Color.RED);
                 break;
             case 1:
-                moduleText.setTextColor(Color.GREEN);
+                moduleText.setTextColor(Color.rgb(71,176,54));
                 break;
             case 2:
                 moduleText.setTextColor(Color.DKGRAY);

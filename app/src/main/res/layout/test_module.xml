@@ -10,6 +10,8 @@
         android:id="@+id/show_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/green_300"
+        android:layout_marginTop="25dp"
         android:text="显示测试结果列表"/>
 
     <com.nj.ts.autotest.view.TabView
@@ -20,12 +22,12 @@
         app:imageViewTextViewMargin="2dip"
         app:tab_imageViewHeight="30dip"
         app:tab_imageViewWidth="30dip"
-        app:tab_itemSelBackground="@drawable/tab_item_sel_bg"
-        app:tab_itemUnSelBackground="@drawable/tab_item_bg"
+        app:tab_itemSelBackground="@drawable/tab_item_bg"
+        app:tab_itemUnSelBackground="@drawable/tab_item_sel_bg"
         app:tab_tabViewBackgroundColor="@color/white"
         app:tab_tabViewGravity="left"
         app:tab_tabViewHeight="80dip"
-        app:tab_textViewSize="14sp"
+        app:tab_textViewSize="12sp"
         />
     <!--app:tab_itemSelBackground="@drawable/tab_item_sel_bg"-->
     <!--app:tab_itemUnSelBackground="@drawable/tab_item_bg"-->

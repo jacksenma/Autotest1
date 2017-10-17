@@ -1,6 +1,7 @@
 package com.nj.ts.autotest.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
@@ -111,6 +112,7 @@ public class ModuleEntityAdapter extends SectionedRecyclerViewAdapter<HeaderHold
         holder.messageView.setText(mAllModules.get(section).getFunctions().get(position).getTag());
 
         updateTextColor(mAllModules.get(section).getFunctions().get(position).getState(), holder.descView);
+        updateTextColor(mAllModules.get(section).getFunctions().get(position).getState(), holder.messageView);
 
     }
 
@@ -120,7 +122,7 @@ public class ModuleEntityAdapter extends SectionedRecyclerViewAdapter<HeaderHold
                 textView.setTextColor(Color.RED);
                 break;
             case 1:
-                textView.setTextColor(Color.GREEN);
+                textView.setTextColor(Color.rgb(71,176,54));
                 break;
             default:
                 textView.setTextColor(Color.BLACK);

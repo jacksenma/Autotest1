@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/tslogo2"
         android:layout_centerHorizontal="true"
-        android:layout_margin="5dp"
+        android:layout_marginTop="30dp"
         />
     <LinearLayout
         android:id="@+id/main_version"
@@ -21,6 +21,7 @@
         android:orientation="horizontal"
         android:layout_below="@id/main_img"
         android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
         >
         <com.nj.ts.autotest.util.MyTextView
             android:layout_width="wrap_content"
@@ -66,7 +67,9 @@
                 android:text="Project"
                 android:textSize="30sp"
                 android:layout_alignParentLeft="true"
-                android:layout_margin="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="40dp"
                 android:textColor="@color/sandybrown"
                 />
             <!--android:layout_toRightOf="@id/main_project"-->
@@ -75,9 +78,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:spinnerMode="dropdown"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginLeft="50dp"
                 android:layout_toRightOf="@+id/main_project"
+                android:popupBackground="@color/blue_200"
                 >
             </Spinner>
         </RelativeLayout>
@@ -96,7 +100,9 @@
                 android:text="Module"
                 android:textSize="30sp"
                 android:layout_alignParentLeft="true"
-                android:layout_margin="30dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
                 android:textColor="@color/sandybrown"
                 />
             <Button
@@ -107,7 +113,7 @@
                 android:text="选择模块"
                 android:layout_marginLeft="70dp"
                 android:layout_toRightOf="@+id/main_module"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="15dp"
                 />
         </RelativeLayout>
 
@@ -117,9 +123,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_margin="30dp"
-            android:gravity="center"
             android:layout_below="@id/relative_module_button"
-            android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:background="@drawable/bg3"
             android:textColor="@color/white"
             android:padding="20dp"

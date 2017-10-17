@@ -37,7 +37,8 @@ public class TestResultActivity extends AppCompatActivity {
     private void initView() {
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         mProjectView = (TextView) findViewById(R.id.project);
-        mProjectView.setText("Project : " + Util.getConfig().getProjectName());
+//        mProjectView.setText("Project : " + Util.getConfig().getProjectName());
+        mProjectView.setText(Util.getConfig().getProjectName());
         mRetest = (Button) findViewById(R.id.retest);
         mRetest.setOnClickListener(new View.OnClickListener() {
             @Override

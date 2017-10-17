@@ -4,12 +4,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,7 +82,7 @@ public class MainActivity extends AppCompatActivity{
 
     private void initTextView() {
         mTextView = (TextView)findViewById(R.id.main_chosen_modules);
-        String result = "";
+        String result = "已选项目："+Util.getProjectName()+"\n\n";
         for(int i = 0;i < yourChoices.size();i++){
             if(i == 0)
                 result += "已选模块如下：\n";
@@ -175,7 +177,14 @@ public class MainActivity extends AppCompatActivity{
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         listview.setOnItemClickListener(new ItemOnClick());
         builder = new AlertDialog.Builder(this);
-        builder.setTitle("Please choose modules");
+
+        TextView title = new TextView(this);
+        title.setText("请选择想测试的模块");
+        title.setPadding(10, 10, 10, 10);
+        title.setGravity(Gravity.CENTER);
+        title.setTextSize(20);
+//        title.setBackgroundColor(this.getResources().getColor(R.color.blue_200));
+        builder.setCustomTitle(title);
         builder.setView(getlistview);
         builder.setPositiveButton("ok",new DialogInterface.OnClickListener() {
 
@@ -245,7 +254,9 @@ public class MainActivity extends AppCompatActivity{
                     bl[j] = false;
                 }
                 //换项目时清除已经选择的模块信息（mTextView和yourChoices）
-                mTextView.setText("还未选择任何模块");
+                String result = "已选项目："+Util.getProjectName()+"\n\n";
+                result += "还未选择任何模块";
+                mTextView.setText(result);
                 yourChoices.clear();
             }
 

@@ -40,8 +40,8 @@ public class SpinnerAdapter extends ArrayAdapter<String>{
         TextView text = (TextView) convertView.findViewById(android.R.id.text1);
         text.setText(mStr.get(position));
         text.setTextSize(26f);
-        Typeface typeFace = FontCache.getTypeface("fonts/DS-DIGII.TTF", getContext());
-        text.setTypeface(typeFace);
+//        Typeface typeFace = FontCache.getTypeface("fonts/DS-DIGII.TTF", getContext());
+//        text.setTypeface(typeFace);
 
         //text.setBackgroundColor(Color.GREEN);
         text.setTextColor(Color.WHITE);

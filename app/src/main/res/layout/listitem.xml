@@ -8,7 +8,9 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants" >
+        android:descendantFocusability="blocksDescendants"
+        android:background="@color/blue_200"
+        >
 
         <TextView
             android:id="@+id/X_item_text"

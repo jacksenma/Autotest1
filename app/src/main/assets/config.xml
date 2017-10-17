@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <projects>
-    <project>CMCC
+    <project>Cmcc
         <module>TestNote</module>
         <module>TestCalendar</module>
         <module>TestChrome</module>
         <module>TestMms</module>
     </project>
 
-    <project>MERCURY
-        <module>TestNote</module>
-        <module>TestCalendar</module>
+    <project>MercurySprint
+        <module>NoteTest</module>
+        <module>CalendarTest</module>
+        <module>HameleonTest</module>
+        <module>OMADMTest</module>
     </project>
 </projects>
