@@ -187,6 +187,8 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
                     MercuryCalendarTest util = new MercuryCalendarTest(this);
                     util.startTest();
                 } else if (module.getName().equals("OMADMTest")) {
+
+
                     Log.d(TAG, "ruan send oma test notification");
                     Intent intent = new Intent();
                     intent.putExtras(getIntent().getExtras());
@@ -199,6 +201,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void refreshUi() {
+        //刷新当前选中module的结果
         for (int i = 0; i < mModuleArrayList.size(); i++) {
             RuanModule module = mModuleArrayList.get(i);
             if (module.isSelect()) {
@@ -210,14 +213,34 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
             }
         }
 
-        mCompleteModuleCount ++;
+        //刷新左侧module的字体颜色
+        for (int i = 0; i < mModuleArrayList.size(); i++) {
+            RuanModule module = mModuleArrayList.get(i);
+            ArrayList<RuanTestResult> testResults = mTestResultMap.get(module.getName());
+            if (!testResults.isEmpty()) {
+                boolean isAllSuccess = true;
+                for (int j = 0; j < testResults.size(); j++) {
+                    RuanTestResult result = testResults.get(j);
+                    if (result.getResultCode() != Constant.TEST_RESULT_SUCCESS) {
+                        isAllSuccess = false;
+                        break;
+                    }
+                }
+                module.setAllSuccess(isAllSuccess);
+            }
+        }
+        mTestModuleAdapter.notifyDataSetChanged();
+
+
+        mCompleteModuleCount++;
         if (mCompleteModuleCount == mModuleArrayList.size()) {
             mProgressBar.setVisibility(View.GONE);
 
             Intent intent = new Intent();
             intent.setClass(this, RuanTestResultActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putString(RuanTestResultActivity.BUNDLE_KEY_MODULE, JSON.toJSONString(mTestResultMap));
+            bundle.putString(RuanTestResultActivity.BUNDLE_KEY_MODULE, JSON.toJSONString(mModuleArrayList));
+            bundle.putString(RuanTestResultActivity.BUNDLE_KEY_RESULT, JSON.toJSONString(mTestResultMap));
             bundle.putString(RuanTestResultActivity.BUNDLE_KEY_PROJECT, JSON.toJSONString(mSelectProject));
             intent.putExtras(bundle);
             startActivityForResult(intent, REQUEST_CODE);
@@ -246,7 +269,8 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
                 Intent intent = new Intent();
                 intent.setClass(this, RuanTestResultActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(RuanTestResultActivity.BUNDLE_KEY_MODULE, JSON.toJSONString(mTestResultMap));
+                bundle.putString(RuanTestResultActivity.BUNDLE_KEY_MODULE, JSON.toJSONString(mModuleArrayList));
+                bundle.putString(RuanTestResultActivity.BUNDLE_KEY_RESULT, JSON.toJSONString(mTestResultMap));
                 bundle.putString(RuanTestResultActivity.BUNDLE_KEY_PROJECT, JSON.toJSONString(mSelectProject));
                 intent.putExtras(bundle);
                 startActivityForResult(intent, REQUEST_CODE);

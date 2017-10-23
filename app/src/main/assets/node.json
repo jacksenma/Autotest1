@@ -42,10 +42,6 @@
         "select": false
       },
       {
-        "name": "ChameleonTest",
-        "select": false
-      },
-      {
         "name": "OMADMTest",
         "select": false
       }

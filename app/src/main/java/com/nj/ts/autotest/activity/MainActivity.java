@@ -3,6 +3,7 @@ package com.nj.ts.autotest.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.ModuleAdapter;
 import com.nj.ts.autotest.adapter.SpinnerAdapter;
@@ -24,6 +26,8 @@ import com.nj.ts.autotest.entity.RuanProject;
 import com.nj.ts.autotest.util.Util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -75,6 +79,25 @@ public class MainActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
+        try {
+            File file = new File(Environment.getExternalStorageDirectory(),
+                    "oma_test_config.json");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String readLine = "";
+            StringBuffer sb = new StringBuffer();
+            while ((readLine = br.readLine()) != null) {
+                sb.append(readLine);
+            }
+            br.close();
+            System.out.println("读取成功：" + sb.toString());
+
+            JSONArray jsonArray = JSON.parseArray(sb.toString().trim());
+
+            System.out.println("读取成功：" + jsonArray.toJSONString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -184,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, TestingActivity.class);
             Bundle bundle = new Bundle();
             bundle.putStringArrayList(TestingActivity.BUNDLE_KEY_MODULE, selectedModules);
-            bundle.putString(TestingActivity.BUNDLE_KEY_PROJECT,JSON.toJSONString(mSelectProject));
+            bundle.putString(TestingActivity.BUNDLE_KEY_PROJECT, JSON.toJSONString(mSelectProject));
             intent.putExtras(bundle);
             startActivity(intent);
         } else {

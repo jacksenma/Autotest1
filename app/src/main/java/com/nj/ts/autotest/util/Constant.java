@@ -13,4 +13,8 @@ public class Constant {
     public static final String MODULE_MERCURY_TEST_NODE = "NoteTest";
     public static final String MODULE_MERCURY_TEST_CALENDAR = "CalendarTest";
     public static final String MODULE_OMA = "OMADMTest";
+
+    //value
+    public static final int TEST_RESULT_SUCCESS = 0;
+    public static final int TEST_RESULT_FAILED = 1;
 }

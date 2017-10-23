@@ -14,15 +14,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.TestResultAdapter;
+import com.nj.ts.autotest.entity.RuanModule;
 import com.nj.ts.autotest.entity.RuanProject;
 import com.nj.ts.autotest.entity.RuanTestResult;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
-public class RuanTestResultActivity extends AppCompatActivity implements View.OnClickListener{
+public class RuanTestResultActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = RuanTestResultActivity.class.getSimpleName();
     private RecyclerView mRecyclerView;
@@ -30,11 +29,12 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
     private Button mRetestButton;
     private Button mTestAloneButton;
 
-    private TestResultAdapter mTestResultAdapter;
     private RuanProject mSelectProject;
+    private ArrayList<RuanModule> mModuleArrayList;
 
-    public static final String BUNDLE_KEY_PROJECT = "project";
     public static final String BUNDLE_KEY_MODULE = "module";
+    public static final String BUNDLE_KEY_PROJECT = "project";
+    public static final String BUNDLE_KEY_RESULT = "result";
     private ArrayList<Object> mResultArrayList;
     private TestResultAdapter mAdapter;
 
@@ -50,8 +50,10 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
         mResultArrayList = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
-        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT),RuanProject.class);
-        JSONObject jsonObject = JSON.parseObject(bundle.getString(BUNDLE_KEY_MODULE));
+
+        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), RuanProject.class);
+        mModuleArrayList = (ArrayList<RuanModule>) JSON.parseArray(bundle.getString(BUNDLE_KEY_MODULE), RuanModule.class);
+        JSONObject jsonObject = JSON.parseObject(bundle.getString(BUNDLE_KEY_RESULT));
         Iterator iterator = jsonObject.keySet().iterator();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
@@ -62,7 +64,7 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
                 mResultArrayList.add(testResult);
             }
         }
-        Log.d(TAG,"ruan mResultArrayList size is " + mResultArrayList.size());
+        Log.d(TAG, "ruan mResultArrayList size is " + mResultArrayList.size());
 
     }
 
@@ -73,7 +75,7 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
         mRecyclerView.setLayoutManager(manager);
 
         mProjectView.setText(mSelectProject.getProject());
-        mAdapter = new TestResultAdapter(mResultArrayList, this);
+        mAdapter = new TestResultAdapter(mModuleArrayList, mResultArrayList, this);
         mRecyclerView.setAdapter(mAdapter);
 
         mRetestButton = (Button) findViewById(R.id.retest);

@@ -23,10 +23,12 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context mContext;
     private ArrayList<Object> mResults;
+    private ArrayList<RuanModule> mModuleArrayList;
 
-    public TestResultAdapter(ArrayList<Object> results, Context context) {
+    public TestResultAdapter(ArrayList<RuanModule> moduleArrayList, ArrayList<Object> results, Context context) {
         this.mResults = results;
         this.mContext = context;
+        this.mModuleArrayList = moduleArrayList;
     }
 
     @Override
@@ -43,18 +45,29 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof TestResultHeaderViewHolder) {
-            ((TestResultHeaderViewHolder)holder).mProjectTextView.setText(String.valueOf(mResults.get(position)));
-        } else if (holder instanceof TestResultContentViewHolder) {
-            RuanTestResult result = (RuanTestResult)mResults.get(position);
+            ((TestResultHeaderViewHolder) holder).mProjectTextView.setText(String.valueOf(mResults.get(position)));
+            for (int i = 0; i < mModuleArrayList.size(); i++) {
+                RuanModule module = mModuleArrayList.get(i);
+                if (module.getName().equals(mResults.get(position))) {
+                    if (module.isAllSuccess()) {
+                        ((TestResultHeaderViewHolder) holder).mProjectTextView.setTextColor(Color.GREEN);
+                    } else {
+                        ((TestResultHeaderViewHolder) holder).mProjectTextView.setTextColor(Color.RED);
+                    }
+                }
+            }
 
-            ((TestResultContentViewHolder)holder).mFunctionTextView.setText(result.getMethod());
-            ((TestResultContentViewHolder)holder).mResultTextView.setText(result.getResultMessage());
+        } else if (holder instanceof TestResultContentViewHolder) {
+            RuanTestResult result = (RuanTestResult) mResults.get(position);
+
+            ((TestResultContentViewHolder) holder).mFunctionTextView.setText(result.getMethod());
+            ((TestResultContentViewHolder) holder).mResultTextView.setText(result.getResultMessage());
             if (result.getResultCode() == 0) {
-                ((TestResultContentViewHolder)holder).mFunctionTextView.setTextColor(Color.GREEN);
-                ((TestResultContentViewHolder)holder).mResultTextView.setTextColor(Color.GREEN);
+                ((TestResultContentViewHolder) holder).mFunctionTextView.setTextColor(Color.GREEN);
+                ((TestResultContentViewHolder) holder).mResultTextView.setTextColor(Color.GREEN);
             } else {
-                ((TestResultContentViewHolder)holder).mFunctionTextView.setTextColor(Color.RED);
-                ((TestResultContentViewHolder)holder).mResultTextView.setTextColor(Color.RED);
+                ((TestResultContentViewHolder) holder).mFunctionTextView.setTextColor(Color.RED);
+                ((TestResultContentViewHolder) holder).mResultTextView.setTextColor(Color.RED);
             }
 
         }
@@ -62,7 +75,7 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        Log.d(TAG,"ruan getItemCount and results size is " + mResults.size());
+        Log.d(TAG, "ruan getItemCount and results size is " + mResults.size());
         return mResults.size();
     }
 
@@ -83,7 +96,7 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public TestResultHeaderViewHolder(View itemView) {
             super(itemView);
-            mProjectTextView = (TextView)itemView.findViewById(R.id.tv_project_name);
+            mProjectTextView = (TextView) itemView.findViewById(R.id.tv_project_name);
         }
     }
 
@@ -93,8 +106,8 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         public TestResultContentViewHolder(View itemView) {
             super(itemView);
-            mFunctionTextView = (TextView)itemView.findViewById(R.id.tv_function_name);
-            mResultTextView = (TextView)itemView.findViewById(R.id.tv_function_result);
+            mFunctionTextView = (TextView) itemView.findViewById(R.id.tv_function_name);
+            mResultTextView = (TextView) itemView.findViewById(R.id.tv_function_result);
         }
     }
 }

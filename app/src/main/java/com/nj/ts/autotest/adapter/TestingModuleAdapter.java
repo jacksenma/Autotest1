@@ -1,6 +1,7 @@
 package com.nj.ts.autotest.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +38,14 @@ public class TestingModuleAdapter extends RecyclerView.Adapter<TestingModuleAdap
         RuanModule module = mModules.get(position);
         viewHolder.mTextView.setText(module.getName());
         if (module.isSelect()) {
-//            viewHolder.mTextView.setBackgroundColor(mContext.getResources().getColor(R.color.lightgray));
             viewHolder.itemView.setBackground(mContext.getResources().getDrawable(R.drawable.tab_item_sel_bg));
         } else {
-//            viewHolder.mTextView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
             viewHolder.itemView.setBackground(mContext.getResources().getDrawable(R.drawable.tab_item_bg));
+        }
+        if (module.isAllSuccess()) {
+            viewHolder.mTextView.setTextColor(Color.GREEN);
+        } else {
+            viewHolder.mTextView.setTextColor(Color.RED);
         }
     }
 
@@ -53,7 +57,7 @@ public class TestingModuleAdapter extends RecyclerView.Adapter<TestingModuleAdap
     @Override
     public void onClick(View v) {
         if (mOnItemClickListener != null) {
-            mOnItemClickListener.onItemClick(v,(int)v.getTag());
+            mOnItemClickListener.onItemClick(v, (int) v.getTag());
         }
     }
 
@@ -62,7 +66,7 @@ public class TestingModuleAdapter extends RecyclerView.Adapter<TestingModuleAdap
     }
 
     public static interface OnItemClickListener {
-        void onItemClick(View view , int position);
+        void onItemClick(View view, int position);
     }
 
     public static class TestingModuleViewHolder extends RecyclerView.ViewHolder {

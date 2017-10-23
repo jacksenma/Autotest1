@@ -15,6 +15,14 @@ public class CmccTestCalendarUtil {
         mContext = context;
     }
 
+    public TestResult hello(String param) {
+        TestResult result = new TestResult();
+        result.setMethod("hello");
+        result.setResultCode(0);
+        result.setResultMessage("成功");
+        return result;
+    }
+
     public void startTest() {
         JSONArray jsonArray = new JSONArray();
         if (searchDate()) {
