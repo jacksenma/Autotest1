@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/secondbg">
+
+    <Button
+        android:id="@+id/btn_show_result"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/green_300"
+        android:text="显示测试结果列表"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/btn_show_result"
+        android:orientation="horizontal"
+        tools:context="com.nj.ts.autotest.activity.TestFunctionActivity">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/module_list_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/test_function_toolbar"
+            android:layout_centerInParent="true"
+            android:layout_weight="1"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/function_list_recyclerview"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/test_function_toolbar"
+            android:layout_centerInParent="true"
+            android:layout_weight="4"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progress"
+        style="@android:style/Widget.Material.ProgressBar.Large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:visibility="visible"/>
+</RelativeLayout>
+
+
+

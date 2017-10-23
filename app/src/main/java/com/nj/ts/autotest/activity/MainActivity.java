@@ -1,181 +1,245 @@
 package com.nj.ts.autotest.activity;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.example.ts.autotest.R;
-import com.nj.ts.autotest.adapter.CheckboxAdapter;
+import com.nj.ts.autotest.adapter.ModuleAdapter;
 import com.nj.ts.autotest.adapter.SpinnerAdapter;
-import com.nj.ts.autotest.entity.Config;
-import com.nj.ts.autotest.entity.Module;
-import com.nj.ts.autotest.util.Constant;
-import com.nj.ts.autotest.util.DomParser;
+import com.nj.ts.autotest.entity.RuanModule;
+import com.nj.ts.autotest.entity.RuanProject;
 import com.nj.ts.autotest.util.Util;
 
-import org.xml.sax.SAXException;
-
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Method;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
-    private TextView mTextView;
-    private Button startTest;
-    private Config config;
-    private SpinnerAdapter arrayAdapter;
-    private Spinner spinner;
-    private List<Config> configs;
-    private Button choose;
-    private ArrayList<Module> yourChoices = new ArrayList<>();
 
-    private View getlistview;
-    private String[] mlistText;
-    private ArrayList<Map<String, Object>> mData = new ArrayList<Map<String, Object>>();
+    private Spinner mSelectProjectSpinner;
+    private TextView mSelectedProjectTextView;
+    private Button mSelectModuleButton;
+    private Button mStartTestButton;
+
+    private SpinnerAdapter mProjectAdapter;
+    private ModuleAdapter mModuleAdapter;
+
+
     private AlertDialog.Builder builder;
-    private SimpleAdapter adapter;
-    private boolean[] bl ;
+
+    private List<RuanProject> mProjects;
+    private RuanProject mSelectProject;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        configs = initConfig();
-        initProjectName(configs);
+        initData();
+        initView();
+        readTestNode();
+
+//        try {
+//            String dirPath = (Environment.getExternalStorageDirectory() + File.separator + "autotest" + File.separator + "omatest");
+//            File dir = new File(dirPath);
+//            if (!dir.exists()) {
+//                dir.mkdir();
+//            }
+//            File testResultFile = new File(dir.getAbsoluteFile(),"result.json");
+//            Log.d(TAG,"ruan " + testResultFile.getAbsolutePath());
+//            if (!testResultFile.exists()) {
+//                if (testResultFile.createNewFile()) {
+//                    FileOutputStream outStream = new FileOutputStream(testResultFile);
+//                    outStream.write(jsonArray.toJSONString().getBytes());
+//                    outStream.close();
+//                }
+//            }
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+
     }
 
-    private void initView(Config config) {
-        initChooseButton();
-        initButton(config);
-        initTextView();
+    private void initData() {
+        mProjects = new ArrayList<RuanProject>();
     }
 
-    private void initTextView() {
-        mTextView = (TextView)findViewById(R.id.main_chosen_modules);
-        String result = "已选项目："+Util.getProjectName()+"\n\n";
-        for(int i = 0;i < yourChoices.size();i++){
-            if(i == 0)
-                result += "已选模块如下：\n";
-            result+=yourChoices.get(i).getName();
-            if(i !=yourChoices.size()-1)
-                result += " , ";
-        }
-        if(yourChoices.size() == 0)
-            result = "还未选择任何模块";
-        mTextView.setText(result);
-    }
+    private void initView() {
+        mSelectedProjectTextView = (TextView) findViewById(R.id.main_chosen_modules);
+        mSelectModuleButton = (Button) findViewById(R.id.main_choose_modules);
+        mSelectProjectSpinner = (Spinner) findViewById(R.id.project_spinner);
+        mStartTestButton = (Button) findViewById(R.id.start_test);
 
-    private void initChooseButton() {
-        choose = (Button) findViewById(R.id.main_choose_modules);
-        choose.setOnClickListener(new View.OnClickListener() {
+        mSelectModuleButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mData.clear();
-                int lengh = mlistText.length;
-                for (int i = 0; i < lengh; i++) {
-                    Map<String, Object> item = new HashMap<String, Object>();
-                    item.put("text", mlistText[i]);
-                    mData.add(item);
-                }
-                CreateDialog();// 点击创建Dialog
+                showModuleListDialog();
             }
         });
 
+        mStartTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickStartTestButton();
+            }
+        });
+
+
+        mProjectAdapter = new SpinnerAdapter(this, mProjects);
+        mSelectProjectSpinner.setAdapter(mProjectAdapter);
+        mSelectProjectSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectProject(mProjects.get(i));
+                mSelectProject = mProjects.get(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
-    class ItemOnClick implements AdapterView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> arg0, View view, int position, long id) {
-            CheckBox cBox = (CheckBox) view.findViewById(R.id.X_checkbox);
-            if (cBox.isChecked()) {
-                cBox.setChecked(false);
-            } else {
-                Log.i("TAG", "取消该选项");
-                cBox.setChecked(true);
+    /**
+     * 读取节点配置数据
+     */
+    private void readTestNode() {
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(getAssets().open("node.json"), "UTF-8");
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            String line;
+            StringBuilder stringBuilder = new StringBuilder();
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
             }
+            bufferedReader.close();
+            inputStreamReader.close();
 
-            if (position == 0 && (cBox.isChecked())) {
-                //如果是选中 全选  就把所有的都选上 然后更新
-                for (int i = 0; i < bl.length; i++) {
-                    bl[i] = true;
-                }
-                adapter.notifyDataSetChanged();
-            } else if (position == 0 && (!cBox.isChecked())) {
-                //如果是取消全选 就把所有的都取消 然后更新
-                for (int i = 0; i < bl.length; i++) {
-                    bl[i] = false;
-                }
-                adapter.notifyDataSetChanged();
+            List<RuanProject> projects = JSON.parseArray(stringBuilder.toString(), RuanProject.class);
+            mProjects.addAll(projects);
+            mSelectProject = mProjects.get(0);
+            mProjectAdapter.notifyDataSetChanged();
+            refreshSelectModule();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 选择项目
+     *
+     * @param project
+     */
+    private void selectProject(RuanProject project) {
+        for (int i = 0; i < mProjects.size(); i++) {
+            mProjects.get(i).setSelect(false);
+            for (int j = 0; j < mProjects.get(i).getModule().size(); j++) {
+                mProjects.get(i).getModule().get(j).setSelect(false);
             }
-            if (position != 0 && (!cBox.isChecked())) {
-                // 如果把其它的选项取消   把全选取消
-                bl[0] = false;
-                bl[position]=false;
-                adapter.notifyDataSetChanged();
-            } else if (position != 0 && (cBox.isChecked())) {
-                //如果选择其它的选项，看是否全部选择
-                //先把该选项选中 设置为true
-                bl[position]=true;
-                int a = 0;
-                for (int i = 1; i < bl.length; i++) {
-                    if (bl[i] == false) {
-                        //如果有一个没选中  就不是全选 直接跳出循环
-                        break;
-                    } else {
-                        //计算有多少个选中的
-                        a++;
-                        if (a == bl.length - 1) {
-                            //如果选项都选中，就把全选 选中，然后更新
-                            bl[0] = true;
-                            adapter.notifyDataSetChanged();
-                        }
-                    }
-                }
+        }
+        project.setSelect(true);
+        refreshSelectModule();
+    }
+
+    /**
+     * 点击开始按钮
+     */
+    private void clickStartTestButton() {
+        boolean flag = false;
+        for (int i = 0; i < mSelectProject.getModule().size(); i++) {
+            if (mSelectProject.getModule().get(i).isSelect()) {
+                flag = true;
+                break;
             }
         }
 
+
+        if (flag) {
+            ArrayList<String> selectedModules = new ArrayList<>();
+            for (int i = 0; i < mSelectProject.getModule().size(); i++) {
+                if (i != 0 && mSelectProject.getModule().get(i).isSelect()) {
+                    selectedModules.add(mSelectProject.getModule().get(i).getName());
+                }
+            }
+
+            Intent intent = new Intent(MainActivity.this, TestingActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList(TestingActivity.BUNDLE_KEY_MODULE, selectedModules);
+            bundle.putString(TestingActivity.BUNDLE_KEY_PROJECT,JSON.toJSONString(mSelectProject));
+            intent.putExtras(bundle);
+            startActivity(intent);
+        } else {
+            Toast.makeText(MainActivity.this, "请至少选择一个测试模块", Toast.LENGTH_SHORT).show();
+            return;
+        }
     }
 
-    public void CreateDialog() {
+    /**
+     * 现实模块列表对话框
+     */
+    public void showModuleListDialog() {
         LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-        getlistview = inflater.inflate(R.layout.listview, null);
+        View getlistview = inflater.inflate(R.layout.listview, null);
         ListView listview = (ListView) getlistview.findViewById(R.id.X_listview);
-        adapter = new SetSimpleAdapter(MainActivity.this, mData, R.layout.listitem, new String[] { "text" }, new int[] { R.id.X_item_text });
-        listview.setAdapter(adapter);
+
+        mModuleAdapter = new ModuleAdapter(this, mSelectProject.getModule());
+        listview.setAdapter(mModuleAdapter);
         listview.setItemsCanFocus(false);
         listview.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        listview.setOnItemClickListener(new ItemOnClick());
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    if (mSelectProject.getModule().get(0).isSelect()) {
+                        for (int i = 0; i < mSelectProject.getModule().size(); i++) {
+                            mSelectProject.getModule().get(i).setSelect(false);
+                        }
+                    } else {
+                        for (int i = 0; i < mSelectProject.getModule().size(); i++) {
+                            mSelectProject.getModule().get(i).setSelect(true);
+                        }
+                    }
+                } else {
+                    RuanModule module = mSelectProject.getModule().get(position);
+                    module.setSelect(!module.isSelect());
+
+                    boolean selectAllFlag = true;
+                    for (int i = 0; i < mSelectProject.getModule().size(); i++) {
+                        if (i != 0) {
+                            if (!mSelectProject.getModule().get(i).isSelect()) {
+                                selectAllFlag = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (selectAllFlag) {
+                        mSelectProject.getModule().get(0).setSelect(true);
+                    } else {
+                        mSelectProject.getModule().get(0).setSelect(false);
+                    }
+                }
+                mModuleAdapter.notifyDataSetChanged();
+            }
+        });
         builder = new AlertDialog.Builder(this);
 
         TextView title = new TextView(this);
@@ -186,188 +250,38 @@ public class MainActivity extends AppCompatActivity{
 //        title.setBackgroundColor(this.getResources().getColor(R.color.blue_200));
         builder.setCustomTitle(title);
         builder.setView(getlistview);
-        builder.setPositiveButton("ok",new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("ok", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                yourChoices.clear();
-                for(int i =1;i < bl.length;i++){
-                    if(bl[i]){
-                        yourChoices.add(config.getModule().get(i-1));
-                    }
-                }
-                initTextView();
+                refreshSelectModule();
             }
         });
         //builder.setNegativeButton("cancel", new DialogOnClick());
-        builder.create().show();
+
+        AlertDialog dialog = builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
     }
 
-    class SetSimpleAdapter extends SimpleAdapter {
+    /**
+     * 选择模块
+     */
+    private void refreshSelectModule() {
+        String result = "已选项目：" + mSelectProject.getProject() + "\n\n";
 
-        public SetSimpleAdapter(Context context, List<? extends Map<String, ?>> data, int resource, String[] from,
-                                int[] to) {
-            super(context, data, resource, from, to);
+        ArrayList<String> selectModules = new ArrayList<>();
+        for (int j = 0; j < mSelectProject.getModule().size(); j++) {
+            if (j != 0 && mSelectProject.getModule().get(j).isSelect()) {
+                selectModules.add(mSelectProject.getModule().get(j).getName());
+            }
         }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LinearLayout.inflate(getBaseContext(), R.layout.listitem, null);
-            }
-            CheckBox ckBox = (CheckBox) convertView.findViewById(R.id.X_checkbox);
-            if (bl[position] == true) {
-                ckBox.setChecked(true);
-            } else if (bl[position] == false) {
-                ckBox.setChecked(false);
-            }
-            return super.getView(position, convertView, parent);
+        if (selectModules.isEmpty()) {
+            result += "还未选择任何模块";
+        } else {
+            result += "已选模块如下：\n";
+            result += Util.arrayListToString(selectModules, " , ");
         }
+        mSelectedProjectTextView.setText(result);
     }
-
-
-    //确定选择哪一个Project
-    private void initProjectName(final List<Config> configs) {
-        spinner = (Spinner)findViewById(R.id.project_spinner);
-        List<String> pro_string = new ArrayList<>();
-        for(Config c : configs)
-            pro_string.add(c.getProjectName());
-        arrayAdapter = new SpinnerAdapter(this,pro_string);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                config = configs.get(i);
-                Util.setConfig(config);
-                initView(config);
-
-                //初始化Dialog数据
-                List<Module> modules = config.getModule();
-                int len = modules.size();
-                mlistText = new String[len+1];
-                bl = new boolean[len+1];
-                mlistText[0] = "全选";
-                bl[0] = false;
-
-                for(int j = 1;j < len + 1;j++){
-                    mlistText[j] = modules.get(j-1).getName();
-                    bl[j] = false;
-                }
-                //换项目时清除已经选择的模块信息（mTextView和yourChoices）
-                String result = "已选项目："+Util.getProjectName()+"\n\n";
-                result += "还未选择任何模块";
-                mTextView.setText(result);
-                yourChoices.clear();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-    }
-    //初始化加载配置信息
-    private List<Config> initConfig() {
-        List<Config> configs=getConfigFromServer();
-        getConfigFromServer();
-        if (configs.size() == 0) {
-            //解析本地config
-            Log.d(TAG, "initConfig: 读取本地配置文件");
-            try {
-                InputStream is = getAssets().open("config.xml");
-                configs = DomParser.getConfig(is);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            } catch (SAXException e) {
-                e.printStackTrace();
-            }
-
-        }
-        return configs;
-    }
-
-    //从服务器端加载配置信息
-    public List<Config> getConfigFromServer() {
-         List<Config> configs =new ArrayList<>();
-         String path = "http://10.0.2.2/TSAutoTestConfig.xml";
-         return configs;
-
-    }
-
-    //检查配置信息的正确性,是否能找到这个项目名称和模块
-    private boolean testConfig(Config config) {
-        if(config == null){
-            Toast.makeText(this, "读取配置文件失败", Toast.LENGTH_SHORT).show();
-            Log.d(TAG, "testConfig: 读取配置文件失败");
-        }else{
-            ArrayList<Module> modules = (ArrayList<Module>) config.getModule();
-            try {
-                for(int i=0;i<modules.size();i++){
-                    String path=Constant.TEST_PATH+config.getProjectName()+".";
-                    String name = modules.get(i).getName();
-                    Log.d(TAG, "testConfig: "+path+"1");
-                    Class c = Class.forName(path+name);
-                }
-
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                StringWriter sw = new StringWriter();
-                e.printStackTrace(new PrintWriter(sw, true));
-                String strs = sw.toString();
-                String [] s = strs.split("\n");
-                String[] info = s[0].split("\\.");
-                Toast.makeText(this,"未找到: "+info[info.length-1], Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "testConfig: 未找到:"+info[info.length-1]);
-                return false;
-            }
-
-        }
-        return true;
-    }
-
-    //开始执行测试代码
-    private void initButton(final Config c) {
-        startTest = (Button)findViewById(R.id.start_test);
-        startTest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(bl == null){
-                    Toast.makeText(MainActivity.this, "请至少选择一个测试模块", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                List<Module> modules = yourChoices;
-
-                if(modules.size() == 0){
-                    Toast.makeText(MainActivity.this, "请至少选择一个测试模块", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Config config = new Config();
-                config.setModule(modules);
-                config.setProjectName(c.getProjectName());
-                Util.setConfig(config);
-                if(testConfig(config)){
-                    Log.d(TAG, "onCreate: 开始测试");
-                    Intent intent = new Intent(MainActivity.this,TestModuleActivity.class);
-                    intent.putExtra("config",config);
-                    startActivity(intent);
-
-                }else{
-                    Toast.makeText(MainActivity.this, "测试失败...", Toast.LENGTH_SHORT).show();
-                    Log.d(TAG, "onCreate: 测试失败");
-                }
-
-
-            }
-        });
-    }
-
-
-
-
-
 }

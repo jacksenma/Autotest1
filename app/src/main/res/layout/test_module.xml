@@ -8,17 +8,17 @@
 
     <Button
         android:id="@+id/show_result"
-        android:layout_width="match_parent"
+        android:layout_width="368dp"
         android:layout_height="wrap_content"
         android:background="@color/green_300"
-        android:layout_marginTop="25dp"
-        android:text="显示测试结果列表"/>
+        android:text="显示测试结果列表"
+        tools:layout_editor_absoluteY="0dp"
+        tools:layout_editor_absoluteX="8dp" />
 
     <com.nj.ts.autotest.view.TabView
         android:id="@+id/tabView"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_height="528dp"
         app:imageViewTextViewMargin="2dip"
         app:tab_imageViewHeight="30dip"
         app:tab_imageViewWidth="30dip"
@@ -28,7 +28,8 @@
         app:tab_tabViewGravity="left"
         app:tab_tabViewHeight="80dip"
         app:tab_textViewSize="12sp"
-        />
+        tools:layout_editor_absoluteY="56dp"
+        tools:layout_editor_absoluteX="0dp" />
     <!--app:tab_itemSelBackground="@drawable/tab_item_sel_bg"-->
     <!--app:tab_itemUnSelBackground="@drawable/tab_item_bg"-->
 

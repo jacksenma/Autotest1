@@ -1,0 +1,54 @@
+[
+  {
+    "project": "Cmcc",
+    "select": true,
+    "module": [
+      {
+        "name": "全选",
+        "select": false
+      },
+      {
+        "name": "TestNote",
+        "select": false
+      },
+      {
+        "name": "TestCalendar",
+        "select": false
+      },
+      {
+        "name": "TestChrome",
+        "select": false
+      },
+      {
+        "name": "TestMms",
+        "select": false
+      }
+    ]
+  },
+  {
+    "project": "MercurySprint",
+    "select": false,
+    "module": [
+      {
+        "name": "全选",
+        "select": false
+      },
+      {
+        "name": "NoteTest",
+        "select": false
+      },
+      {
+        "name": "CalendarTest",
+        "select": false
+      },
+      {
+        "name": "ChameleonTest",
+        "select": false
+      },
+      {
+        "name": "OMADMTest",
+        "select": false
+      }
+    ]
+  }
+]
