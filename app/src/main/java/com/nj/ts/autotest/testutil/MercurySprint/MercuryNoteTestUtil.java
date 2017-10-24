@@ -29,6 +29,17 @@ public class MercuryNoteTestUtil {
         mContext.sendBroadcast(intent);
     }
 
+    /**
+     * @return all test items
+     */
+    public String[] getTestItems() {
+        return new String[]{
+                "newFile",
+                "deleteFile",
+                "saveFile",
+        };
+    }
+
     private TestResult newFile() {
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
@@ -54,7 +65,7 @@ public class MercuryNoteTestUtil {
         }
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
-        testResult.setResultCode(Constant.TEST_RESULT_FAILED);
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
         testResult.setResultMessage("删除文件");
         return testResult;
     }
@@ -69,7 +80,7 @@ public class MercuryNoteTestUtil {
         }
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
-        testResult.setResultCode(Constant.TEST_RESULT_FAILED);
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
         testResult.setResultMessage("保存文件");
         return testResult;
     }

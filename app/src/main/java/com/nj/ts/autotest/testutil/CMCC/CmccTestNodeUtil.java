@@ -30,6 +30,17 @@ public class CmccTestNodeUtil {
         mContext.sendBroadcast(intent);
     }
 
+    /**
+     * @return all test items
+     */
+    public String[] getTestItems() {
+        return new String[]{
+                "newFile",
+                "deleteFile",
+                "saveFile",
+        };
+    }
+
     private TestResult newFile() {
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {

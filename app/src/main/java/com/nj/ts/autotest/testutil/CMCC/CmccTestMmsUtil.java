@@ -29,6 +29,17 @@ public class CmccTestMmsUtil {
         mContext.sendBroadcast(intent);
     }
 
+    /**
+     * @return all test items
+     */
+    public String[] getTestItems() {
+        return new String[]{
+                "add",
+                "delete",
+                "modify",
+        };
+    }
+
     public TestResult add() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());

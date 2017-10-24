@@ -3,17 +3,16 @@ package com.nj.ts.autotest.testutil.MercurySprint;
 import android.content.Context;
 import android.content.Intent;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.nj.ts.autotest.entity.TestResult;
 import com.nj.ts.autotest.util.Constant;
 
-public class MercuryCalendarTest {
-    private static final String TAG = MercuryCalendarTest.class.getSimpleName();
+public class MercuryCalendarTestUtil {
+    private static final String TAG = MercuryCalendarTestUtil.class.getSimpleName();
     public static final String BROADCAST_MERCURY_TEST_CALENDAR_FINISHED = "broadcast_mercury_test_calendar_finished";
     private Context mContext;
 
-    public MercuryCalendarTest(Context context) {
+    public MercuryCalendarTestUtil(Context context) {
         mContext = context;
     }
 
@@ -28,6 +27,18 @@ public class MercuryCalendarTest {
         intent.setAction(BROADCAST_MERCURY_TEST_CALENDAR_FINISHED);
         intent.putExtra(Constant.BUNDLE_KET_TEST_RESULT, jsonArray.toJSONString());
         mContext.sendBroadcast(intent);
+    }
+
+    /**
+     * @return all test items
+     */
+    public String[] getTestItems() {
+        return new String[]{
+                "searchDate",
+                "addEvent",
+                "addReminder",
+                "delete"
+        };
     }
 
     private TestResult searchDate() {

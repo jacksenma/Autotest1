@@ -29,8 +29,9 @@ import com.nj.ts.autotest.testutil.CMCC.CmccTestChromeUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestMmsUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestNodeUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestCalendarUtil;
-import com.nj.ts.autotest.testutil.MercurySprint.MercuryCalendarTest;
+import com.nj.ts.autotest.testutil.MercurySprint.MercuryCalendarTestUtil;
 import com.nj.ts.autotest.testutil.MercurySprint.MercuryNoteTestUtil;
+import com.nj.ts.autotest.testutil.MercurySprint.MercuryOmaTestUtil;
 import com.nj.ts.autotest.util.Constant;
 import com.nj.ts.autotest.util.ToastUtil;
 
@@ -47,7 +48,6 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
     public static final int RESULT_CODE_TEST_ALONE = 0X03;
 
     //OMA
-    private static final String ACTION_START_OMA_TEST = "ts.intent.action.ActionOmaTester";
     private static final String BROADCAST_OMA_TEST_FINISHED = "baroadcast_oma_test_finished";
 
     private Button mShowResultButton;
@@ -92,9 +92,9 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
     private void initData() {
         mModuleArrayList = new ArrayList<>();
         mTestResultMap = new HashMap<>();
-        mCurrentModuleFunctionTestResult = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
+        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), RuanProject.class);
         ArrayList<String> arrayList = bundle.getStringArrayList(BUNDLE_KEY_MODULE);
         for (int i = 0; i < arrayList.size(); i++) {
             RuanModule module = new RuanModule();
@@ -106,10 +106,86 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
             }
             mModuleArrayList.add(module);
 
-            ArrayList<TestResult> functionTestResults = new ArrayList<>();
-            mTestResultMap.put(arrayList.get(i), functionTestResults);
+            if (mSelectProject.getProject().equals(Constant.PROJECT_CMCC)) {
+                if (module.getName().equals(Constant.MODULE_CMSS_TEST_NODE)) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    CmccTestNodeUtil util = new CmccTestNodeUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                } else if (module.getName().equals(Constant.MODULE_CMSS_TEST_CALENDAR)) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    CmccTestCalendarUtil util = new CmccTestCalendarUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                } else if (module.getName().equals(Constant.MODULE_CMSS_TEST_CHROME)) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    CmccTestChromeUtil util = new CmccTestChromeUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                } else if (module.getName().equals(Constant.MODULE_CMSS_TEST_CMMS)) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    CmccTestMmsUtil util = new CmccTestMmsUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                }
+            } else if (mSelectProject.getProject().equals("MercurySprint")) {
+                if (module.getName().equals(Constant.MODULE_MERCURY_TEST_NODE)) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    MercuryNoteTestUtil util = new MercuryNoteTestUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                } else if (module.getName().equals(Constant.MODULE_MERCURY_TEST_CALENDAR)) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    MercuryCalendarTestUtil util = new MercuryCalendarTestUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                } else if (module.getName().equals("OMADMTest")) {
+                    ArrayList<TestResult> functionTestResults = new ArrayList<>();
+                    MercuryOmaTestUtil util = new MercuryOmaTestUtil(this);
+                    for (int j = 0; j < util.getTestItems().length; j++) {
+                        TestResult testResult = new TestResult();
+                        testResult.setMethod(util.getTestItems()[j]);
+                        testResult.setResultCode(Constant.TEST_RESULT_TESTING);
+                        functionTestResults.add(testResult);
+                    }
+                    mTestResultMap.put(arrayList.get(i), functionTestResults);
+                }
+            }
+            if (i == 0) {
+                mCurrentModuleFunctionTestResult = new ArrayList<>();
+                mCurrentModuleFunctionTestResult.addAll(mTestResultMap.get(arrayList.get(i)));
+            }
         }
-        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), RuanProject.class);
     }
 
     private void initView() {
@@ -184,17 +260,11 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
                     MercuryNoteTestUtil util = new MercuryNoteTestUtil(this);
                     util.startTest();
                 } else if (module.getName().equals(Constant.MODULE_MERCURY_TEST_CALENDAR)) {
-                    MercuryCalendarTest util = new MercuryCalendarTest(this);
+                    MercuryCalendarTestUtil util = new MercuryCalendarTestUtil(this);
                     util.startTest();
                 } else if (module.getName().equals("OMADMTest")) {
-
-
-                    Log.d(TAG, "ruan send oma test notification");
-                    Intent intent = new Intent();
-                    intent.putExtras(getIntent().getExtras());
-                    intent.addFlags(0x01000000);
-                    intent.setAction(ACTION_START_OMA_TEST);
-                    sendBroadcast(intent);
+                    MercuryOmaTestUtil util = new MercuryOmaTestUtil(this);
+                    util.startTest();
                 }
             }
         }
@@ -256,7 +326,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
         intentFilter.addAction(CmccTestChromeUtil.BROADCAST_CMCC_TEST_CHROME_FINISHED);
         intentFilter.addAction(CmccTestMmsUtil.BROADCAST_CMCC_TEST_MMS_FINISHED);
         intentFilter.addAction(MercuryNoteTestUtil.BROADCAST_MERCURY_TEST_NODE_FINISHED);
-        intentFilter.addAction(MercuryCalendarTest.BROADCAST_MERCURY_TEST_CALENDAR_FINISHED);
+        intentFilter.addAction(MercuryCalendarTestUtil.BROADCAST_MERCURY_TEST_CALENDAR_FINISHED);
         registerReceiver(mReceiver, intentFilter);
     }
 
@@ -324,7 +394,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_MERCURY_TEST_NODE;
                     mHandler.sendMessage(msg);
-                } else if (action.equals(MercuryCalendarTest.BROADCAST_MERCURY_TEST_CALENDAR_FINISHED)) {
+                } else if (action.equals(MercuryCalendarTestUtil.BROADCAST_MERCURY_TEST_CALENDAR_FINISHED)) {
                     ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_MERCURY_TEST_CALENDAR, testResults);
                     Message msg = new Message();

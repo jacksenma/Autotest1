@@ -29,6 +29,17 @@ public class CmccTestChromeUtil {
         mContext.sendBroadcast(intent);
     }
 
+    /**
+     * @return all test items
+     */
+    public String[] getTestItems() {
+        return new String[]{
+                "open",
+                "close",
+                "openWebPage",
+        };
+    }
+
     private TestResult open() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());

@@ -3,10 +3,9 @@ package com.nj.ts.autotest.activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.ModuleAdapter;
 import com.nj.ts.autotest.adapter.SpinnerAdapter;
@@ -27,8 +25,6 @@ import com.nj.ts.autotest.entity.RuanProject;
 import com.nj.ts.autotest.util.Util;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -100,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
+
+
 
     }
 

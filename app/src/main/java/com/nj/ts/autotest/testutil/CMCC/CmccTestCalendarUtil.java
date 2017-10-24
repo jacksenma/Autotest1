@@ -38,6 +38,18 @@ public class CmccTestCalendarUtil {
         mContext.sendBroadcast(intent);
     }
 
+    /**
+     * @return all test items
+     */
+    public String[] getTestItems() {
+        return new String[]{
+                "searchDate",
+                "addEvent",
+                "addReminder",
+                "delete"
+        };
+    }
+
     private TestResult searchDate() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
