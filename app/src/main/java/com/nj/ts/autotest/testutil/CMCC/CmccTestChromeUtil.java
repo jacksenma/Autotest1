@@ -3,9 +3,10 @@ package com.nj.ts.autotest.testutil.CMCC;
 import android.content.Context;
 import android.content.Intent;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.nj.ts.autotest.util.Log;
+import com.nj.ts.autotest.entity.TestResult;
+import com.nj.ts.autotest.util.Constant;
 
 public class CmccTestChromeUtil {
     private static final String TAG = CmccTestChromeUtil.class.getSimpleName();
@@ -18,71 +19,42 @@ public class CmccTestChromeUtil {
 
     public void startTest() {
         JSONArray jsonArray = new JSONArray();
-        if (open()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "open");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "打开浏览器成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "open");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "打开浏览器失败");
-            jsonArray.add(json);
-        }
-
-        if (close()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "close");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "关闭浏览器成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "close");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "关闭浏览器失败");
-            jsonArray.add(json);
-        }
-
-        if (openWebPage()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "openWebPage");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "打开网页成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "openWebPage");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "打开网页失败:网址错误");
-            jsonArray.add(json);
-        }
+        jsonArray.add(open());
+        jsonArray.add(close());
+        jsonArray.add(openWebPage());
 
         Intent intent = new Intent();
         intent.setAction(BROADCAST_CMCC_TEST_CHROME_FINISHED);
-        intent.putExtra("result",jsonArray.toJSONString());
+        intent.putExtra(Constant.BUNDLE_KET_TEST_RESULT, jsonArray.toJSONString());
         mContext.sendBroadcast(intent);
     }
 
-    private boolean open() {
-        Log.saveLog("aaa");
-        return true;
+    private TestResult open() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("打开浏览器成功");
+        return testResult;
     }
 
-    private boolean close() {
-        //Log.saveLog("aaa");
-        return true;
+    private TestResult close() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("打开浏览器成功");
+        return testResult;
     }
 
-    private boolean openWebPage() {
+    private TestResult openWebPage() {
         for (int i = 0; i < 100000; i++) {
             for (int j = 0; j < 1000; j++) {
 
             }
         }
-        //测试代码
-        return false;
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_FAILED);
+        testResult.setResultMessage("打开网页失败:网址错误");
+        return testResult;
     }
 }

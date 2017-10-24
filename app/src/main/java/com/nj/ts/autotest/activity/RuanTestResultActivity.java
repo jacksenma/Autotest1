@@ -16,7 +16,7 @@ import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.TestResultAdapter;
 import com.nj.ts.autotest.entity.RuanModule;
 import com.nj.ts.autotest.entity.RuanProject;
-import com.nj.ts.autotest.entity.RuanTestResult;
+import com.nj.ts.autotest.entity.TestResult;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -60,7 +60,7 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
             mResultArrayList.add(key);
             JSONArray jsonArray = jsonObject.getJSONArray(key);
             for (int i = 0; i < jsonArray.size(); i++) {
-                RuanTestResult testResult = JSON.parseObject(jsonArray.getJSONObject(i).toJSONString(), RuanTestResult.class);
+                TestResult testResult = JSON.parseObject(jsonArray.getJSONObject(i).toJSONString(), TestResult.class);
                 mResultArrayList.add(testResult);
             }
         }

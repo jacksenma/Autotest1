@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.entity.RuanModule;
-import com.nj.ts.autotest.entity.RuanTestResult;
+import com.nj.ts.autotest.entity.TestResult;
 
 import java.util.ArrayList;
 
@@ -58,7 +58,7 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
 
         } else if (holder instanceof TestResultContentViewHolder) {
-            RuanTestResult result = (RuanTestResult) mResults.get(position);
+            TestResult result = (TestResult) mResults.get(position);
 
             ((TestResultContentViewHolder) holder).mFunctionTextView.setText(result.getMethod());
             ((TestResultContentViewHolder) holder).mResultTextView.setText(result.getResultMessage());

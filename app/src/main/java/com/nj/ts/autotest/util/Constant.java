@@ -17,4 +17,5 @@ public class Constant {
     //value
     public static final int TEST_RESULT_SUCCESS = 0;
     public static final int TEST_RESULT_FAILED = 1;
+    public static final String BUNDLE_KET_TEST_RESULT = "result";
 }

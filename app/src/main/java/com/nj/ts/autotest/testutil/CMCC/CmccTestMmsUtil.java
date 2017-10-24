@@ -3,8 +3,10 @@ package com.nj.ts.autotest.testutil.CMCC;
 import android.content.Context;
 import android.content.Intent;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.nj.ts.autotest.entity.TestResult;
+import com.nj.ts.autotest.util.Constant;
 
 public class CmccTestMmsUtil {
     private static final String TAG = CmccTestMmsUtil.class.getSimpleName();
@@ -17,63 +19,37 @@ public class CmccTestMmsUtil {
 
     public void startTest() {
         JSONArray jsonArray = new JSONArray();
-        if (add()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "add");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "新增成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "add");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "新增失败");
-            jsonArray.add(json);
-        }
-
-        if (delete()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "delete");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "删除成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "delete");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "删除失败");
-            jsonArray.add(json);
-        }
-
-        if (modify()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "modify");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "修改成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "modify");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "修改失败");
-            jsonArray.add(json);
-        }
+        jsonArray.add(add());
+        jsonArray.add(delete());
+        jsonArray.add(modify());
 
         Intent intent = new Intent();
         intent.setAction(BROADCAST_CMCC_TEST_MMS_FINISHED);
-        intent.putExtra("result",jsonArray.toJSONString());
+        intent.putExtra(Constant.BUNDLE_KET_TEST_RESULT, jsonArray.toJSONString());
         mContext.sendBroadcast(intent);
     }
 
-    public boolean add() {
-        return true;
+    public TestResult add() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("新增成功");
+        return testResult;
     }
 
-    public boolean delete() {
-        return true;
+    public TestResult delete() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("删除成功");
+        return testResult;
     }
 
-    public boolean modify() {
-        return true;
+    public TestResult modify() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("修改成功");
+        return testResult;
     }
 }

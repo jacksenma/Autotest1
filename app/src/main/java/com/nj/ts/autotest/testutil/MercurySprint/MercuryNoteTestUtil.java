@@ -3,10 +3,10 @@ package com.nj.ts.autotest.testutil.MercurySprint;
 import android.content.Context;
 import android.content.Intent;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.nj.ts.autotest.testutil.CMCC.CmccTestMmsUtil;
-import com.nj.ts.autotest.testutil.CMCC.CmccTestNodeUtil;
+import com.nj.ts.autotest.entity.TestResult;
+import com.nj.ts.autotest.util.Constant;
 
 public class MercuryNoteTestUtil {
     private static final String TAG = MercuryNoteTestUtil.class.getSimpleName();
@@ -19,55 +19,17 @@ public class MercuryNoteTestUtil {
 
     public void startTest() {
         JSONArray jsonArray = new JSONArray();
-        if (newFile()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "newFile");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "测试成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "newFile");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "新建文件失败:没有权限");
-            jsonArray.add(json);
-        }
-
-        if (deleteFile()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "deleteFile");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "删除文件");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "deleteFile");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "删除失败");
-            jsonArray.add(json);
-        }
-
-        if (saveFile()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "saveFile");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "保存文件");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "saveFile");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "保存失败");
-            jsonArray.add(json);
-        }
+        jsonArray.add(newFile());
+        jsonArray.add(deleteFile());
+        jsonArray.add(saveFile());
 
         Intent intent = new Intent();
         intent.setAction(BROADCAST_MERCURY_TEST_NODE_FINISHED);
-        intent.putExtra("result",jsonArray.toJSONString());
+        intent.putExtra(Constant.BUNDLE_KET_TEST_RESULT, jsonArray.toJSONString());
         mContext.sendBroadcast(intent);
     }
 
-    private boolean newFile() {
+    private TestResult newFile() {
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
                 for (int k = 0; k < 100; k++) {
@@ -75,11 +37,14 @@ public class MercuryNoteTestUtil {
                 }
             }
         }
-        //测试代码
-        return false;
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_FAILED);
+        testResult.setResultMessage("新建文件失败:没有权限");
+        return testResult;
     }
 
-    private boolean deleteFile() {
+    private TestResult deleteFile() {
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
                 for (int k = 0; k < 100; k++) {
@@ -87,11 +52,14 @@ public class MercuryNoteTestUtil {
                 }
             }
         }
-        //测试代码
-        return true;
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_FAILED);
+        testResult.setResultMessage("删除文件");
+        return testResult;
     }
 
-    private boolean saveFile() {
+    private TestResult saveFile() {
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < 100; j++) {
                 for (int k = 0; k < 100; k++) {
@@ -99,7 +67,10 @@ public class MercuryNoteTestUtil {
                 }
             }
         }
-        //测试代码
-        return true;
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_FAILED);
+        testResult.setResultMessage("保存文件");
+        return testResult;
     }
 }

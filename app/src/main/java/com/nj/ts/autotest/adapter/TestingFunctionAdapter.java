@@ -8,16 +8,15 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ts.autotest.R;
-import com.nj.ts.autotest.entity.RuanModule;
-import com.nj.ts.autotest.entity.RuanTestResult;
+import com.nj.ts.autotest.entity.TestResult;
 
 import java.util.ArrayList;
 
 public class TestingFunctionAdapter extends RecyclerView.Adapter<TestingFunctionAdapter.TestingFunctionViewHolder>{
     private Context mContext;
-    private ArrayList<RuanTestResult> mTestResules;
+    private ArrayList<TestResult> mTestResules;
 
-    public TestingFunctionAdapter(ArrayList<RuanTestResult> testResults, Context context) {
+    public TestingFunctionAdapter(ArrayList<TestResult> testResults, Context context) {
         this.mTestResules = testResults;
         this.mContext = context;
     }
@@ -31,7 +30,7 @@ public class TestingFunctionAdapter extends RecyclerView.Adapter<TestingFunction
 
     @Override
     public void onBindViewHolder(TestingFunctionViewHolder viewHolder, int position) {
-        RuanTestResult testResult = mTestResules.get(position);
+        TestResult testResult = mTestResules.get(position);
         viewHolder.mFuctionTextView.setText(testResult.getMethod());
         viewHolder.mResultTextView.setText(testResult.getResultMessage());
 

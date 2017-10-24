@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -79,25 +80,26 @@ public class MainActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-        try {
-            File file = new File(Environment.getExternalStorageDirectory(),
-                    "oma_test_config.json");
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String readLine = "";
-            StringBuffer sb = new StringBuffer();
-            while ((readLine = br.readLine()) != null) {
-                sb.append(readLine);
-            }
-            br.close();
-            System.out.println("读取成功：" + sb.toString());
 
-            JSONArray jsonArray = JSON.parseArray(sb.toString().trim());
-
-            System.out.println("读取成功：" + jsonArray.toJSONString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            File file = new File(Environment.getExternalStorageDirectory(),
+//                    "oma_test_config.json");
+//            BufferedReader br = new BufferedReader(new FileReader(file));
+//            String readLine = "";
+//            StringBuffer sb = new StringBuffer();
+//            while ((readLine = br.readLine()) != null) {
+//                sb.append(readLine);
+//            }
+//            br.close();
+//            System.out.println("读取成功：" + sb.toString());
+//
+//            JSONArray jsonArray = JSON.parseArray(sb.toString().trim());
+//
+//            System.out.println("读取成功：" + jsonArray.toJSONString());
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 

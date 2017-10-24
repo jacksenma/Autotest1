@@ -3,10 +3,10 @@ package com.nj.ts.autotest.testutil.MercurySprint;
 import android.content.Context;
 import android.content.Intent;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.nj.ts.autotest.testutil.CMCC.CmccTestCalendarUtil;
-import com.nj.ts.autotest.testutil.CMCC.CmccTestMmsUtil;
+import com.nj.ts.autotest.entity.TestResult;
+import com.nj.ts.autotest.util.Constant;
 
 public class MercuryCalendarTest {
     private static final String TAG = MercuryCalendarTest.class.getSimpleName();
@@ -19,81 +19,46 @@ public class MercuryCalendarTest {
 
     public void startTest() {
         JSONArray jsonArray = new JSONArray();
-        if (searchDate()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "searchDate");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "查找日期成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "searchDate");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "查找日期失败");
-            jsonArray.add(json);
-        }
-
-        if (addEvent()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "addEvent");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "添加事件成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "addEvent");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "添加事件失败");
-            jsonArray.add(json);
-        }
-
-        if (addReminder()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "addReminder");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "添加提醒成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "addReminder");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "添加提醒失败");
-            jsonArray.add(json);
-        }
-
-        if (delete()) {
-            JSONObject json = new JSONObject();
-            json.put("method", "delete");
-            json.put("resultCode", 0);
-            json.put("resultMessage", "删除提醒成功");
-            jsonArray.add(json);
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("method", "delete");
-            json.put("resultCode", 1);
-            json.put("resultMessage", "删除提醒失败");
-            jsonArray.add(json);
-        }
+        jsonArray.add(searchDate());
+        jsonArray.add(addEvent());
+        jsonArray.add(addReminder());
+        jsonArray.add(delete());
 
         Intent intent = new Intent();
         intent.setAction(BROADCAST_MERCURY_TEST_CALENDAR_FINISHED);
-        intent.putExtra("result",jsonArray.toJSONString());
+        intent.putExtra(Constant.BUNDLE_KET_TEST_RESULT, jsonArray.toJSONString());
         mContext.sendBroadcast(intent);
     }
 
-    private boolean searchDate() {
-        return true;
+    private TestResult searchDate() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("查找日期成功");
+        return testResult;
     }
 
-    private boolean addEvent() {
-        return true;
+    private TestResult addEvent() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("添加事件成功");
+        return testResult;
     }
 
-    private boolean addReminder() {
-        return true;
+    private TestResult addReminder() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("添加提醒成功");
+        return testResult;
     }
 
-    private boolean delete() {
-        return true;
+    private TestResult delete() {
+        TestResult testResult = new TestResult();
+        testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
+        testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
+        testResult.setResultMessage("删除提醒成功");
+        return testResult;
     }
 }

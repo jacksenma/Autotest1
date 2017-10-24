@@ -24,7 +24,7 @@ import com.nj.ts.autotest.adapter.TestingFunctionAdapter;
 import com.nj.ts.autotest.adapter.TestingModuleAdapter;
 import com.nj.ts.autotest.entity.RuanModule;
 import com.nj.ts.autotest.entity.RuanProject;
-import com.nj.ts.autotest.entity.RuanTestResult;
+import com.nj.ts.autotest.entity.TestResult;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestChromeUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestMmsUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestNodeUtil;
@@ -54,9 +54,9 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
     private ProgressBar mProgressBar;
     private RuanProject mSelectProject;
     private ArrayList<RuanModule> mModuleArrayList;
-    private ArrayList<RuanTestResult> mCurrentModuleFunctionTestResult;
+    private ArrayList<TestResult> mCurrentModuleFunctionTestResult;
 
-    private HashMap<String, ArrayList<RuanTestResult>> mTestResultMap;
+    private HashMap<String, ArrayList<TestResult>> mTestResultMap;
     private RecyclerView mModuleRecyclerView, mFunctionRecycleView;
     private TestingModuleAdapter mTestModuleAdapter;
     private TestingFunctionAdapter mTestFunctionAdapter;
@@ -106,7 +106,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
             }
             mModuleArrayList.add(module);
 
-            ArrayList<RuanTestResult> functionTestResults = new ArrayList<>();
+            ArrayList<TestResult> functionTestResults = new ArrayList<>();
             mTestResultMap.put(arrayList.get(i), functionTestResults);
         }
         mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), RuanProject.class);
@@ -138,7 +138,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
                 for (int i = 0; i < mModuleArrayList.size(); i++) {
                     RuanModule module = mModuleArrayList.get(i);
                     if (module.isSelect()) {
-                        ArrayList<RuanTestResult> testResults = mTestResultMap.get(module.getName());
+                        ArrayList<TestResult> testResults = mTestResultMap.get(module.getName());
                         mCurrentModuleFunctionTestResult.clear();
                         mCurrentModuleFunctionTestResult.addAll(testResults);
                         mTestFunctionAdapter.notifyDataSetChanged();
@@ -205,7 +205,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
         for (int i = 0; i < mModuleArrayList.size(); i++) {
             RuanModule module = mModuleArrayList.get(i);
             if (module.isSelect()) {
-                ArrayList<RuanTestResult> testResults = mTestResultMap.get(module.getName());
+                ArrayList<TestResult> testResults = mTestResultMap.get(module.getName());
                 mCurrentModuleFunctionTestResult.clear();
                 mCurrentModuleFunctionTestResult.addAll(testResults);
                 mTestFunctionAdapter.notifyDataSetChanged();
@@ -216,11 +216,11 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
         //刷新左侧module的字体颜色
         for (int i = 0; i < mModuleArrayList.size(); i++) {
             RuanModule module = mModuleArrayList.get(i);
-            ArrayList<RuanTestResult> testResults = mTestResultMap.get(module.getName());
+            ArrayList<TestResult> testResults = mTestResultMap.get(module.getName());
             if (!testResults.isEmpty()) {
                 boolean isAllSuccess = true;
                 for (int j = 0; j < testResults.size(); j++) {
-                    RuanTestResult result = testResults.get(j);
+                    TestResult result = testResults.get(j);
                     if (result.getResultCode() != Constant.TEST_RESULT_SUCCESS) {
                         isAllSuccess = false;
                         break;
@@ -290,49 +290,49 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
             String data = intent.getStringExtra("result");
             if (!TextUtils.isEmpty(intent.getAction())) {
                 if (intent.getAction().equals(CmccTestNodeUtil.BROADCAST_CMCC_TEST_NODE_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_CMSS_TEST_NODE, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_CMSS_TEST_NODE;
                     mHandler.sendMessage(msg);
                 } else if (action.equals(CmccTestCalendarUtil.BROADCAST_CMCC_TEST_CALENDAR_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_CMSS_TEST_CALENDAR, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_CMSS_TEST_CALENDAR;
                     mHandler.sendMessage(msg);
                 } else if (action.equals(CmccTestChromeUtil.BROADCAST_CMCC_TEST_CHROME_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_CMSS_TEST_CHROME, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_CMSS_TEST_CHROME;
                     mHandler.sendMessage(msg);
                 } else if (action.equals(CmccTestMmsUtil.BROADCAST_CMCC_TEST_MMS_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_CMSS_TEST_CMMS, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_CMSS_TEST_CMMS;
                     mHandler.sendMessage(msg);
                 } else if (action.equals(MercuryNoteTestUtil.BROADCAST_MERCURY_TEST_NODE_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_MERCURY_TEST_NODE, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_MERCURY_TEST_NODE;
                     mHandler.sendMessage(msg);
                 } else if (action.equals(MercuryCalendarTest.BROADCAST_MERCURY_TEST_CALENDAR_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_MERCURY_TEST_CALENDAR, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;
                     msg.obj = Constant.MODULE_MERCURY_TEST_CALENDAR;
                     mHandler.sendMessage(msg);
                 } else if (intent.getAction().equals(BROADCAST_OMA_TEST_FINISHED)) {
-                    ArrayList<RuanTestResult> testResults = (ArrayList<RuanTestResult>) JSONArray.parseArray(data, RuanTestResult.class);
+                    ArrayList<TestResult> testResults = (ArrayList<TestResult>) JSONArray.parseArray(data, TestResult.class);
                     mTestResultMap.put(Constant.MODULE_OMA, testResults);
                     Message msg = new Message();
                     msg.what = MSG_REFRESH_UI;

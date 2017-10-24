@@ -1,7 +1,7 @@
 package com.nj.ts.autotest.entity;
 
 
-public class RuanTestResult {
+public class TestResult {
     private String method;
     private int resultCode;
     private String resultMessage;
