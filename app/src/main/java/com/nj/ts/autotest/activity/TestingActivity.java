@@ -22,9 +22,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.TestingFunctionAdapter;
 import com.nj.ts.autotest.adapter.TestingModuleAdapter;
+import com.nj.ts.autotest.email.Attachment;
+import com.nj.ts.autotest.email.MailServer;
 import com.nj.ts.autotest.entity.Module;
 import com.nj.ts.autotest.entity.Project;
 import com.nj.ts.autotest.entity.TestResult;
+import com.nj.ts.autotest.smb.SmbConfig;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestChromeUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestMmsUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestNodeUtil;
@@ -35,9 +38,13 @@ import com.nj.ts.autotest.testutil.MercurySprint.MercuryOmaTestUtil;
 import com.nj.ts.autotest.util.Constant;
 import com.nj.ts.autotest.util.ToastUtil;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class TestingActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = TestingActivity.class.getSimpleName();
@@ -314,6 +321,8 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
         if (mCompleteModuleCount == mModuleArrayList.size()) {
             mProgressBar.setVisibility(View.GONE);
 
+            sendTestResultByEmail();
+
             Intent intent = new Intent();
             intent.setClass(this, RuanTestResultActivity.class);
             Bundle bundle = new Bundle();
@@ -537,5 +546,45 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
             mTestResultMap.put(module.getName(), mCurrentModuleFunctionTestResult);
         }
         ToastUtil.showShortToast(this, testItem + "方法测试成功");
+    }
+
+    private void sendTestResultByEmail() {
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("<h1 style=\"font-family:verdana\">测试项目:" + mSelectProject.getProject() + "</h1><br>");
+
+            Iterator iterator = mTestResultMap.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                stringBuilder.append("<h3 style=\"font-family:verdana\">测试模块：" + key + "</h3>");
+                ArrayList<TestResult> testResults = mTestResultMap.get(key);
+
+
+                stringBuilder.append("<table border=\"0\">");
+                stringBuilder.append("<tr><th>测试条目</th><th>测试结果</th></tr>");
+
+
+                int successCount = 0;
+                for (int i = 0; i < testResults.size(); i++) {
+                    TestResult testResult = testResults.get(i);
+                    if (testResult.getResultCode() == Constant.TEST_RESULT_SUCCESS) {
+                        successCount++;
+                        stringBuilder.append("<tr><td align=\"center\">" + testResult.getMethod() + "</td><td align=\"center\" style=\"color:green;\">" + testResult.getResultMessage() + "</td></tr>");
+                    } else {
+                        stringBuilder.append("<tr><td align=\"center\">" + testResult.getMethod() + "</td><td align=\"center\" style=\"color:red;\">" + testResult.getResultMessage() + "</td></tr>");
+                    }
+                }
+                stringBuilder.append("</table>");
+                stringBuilder.append("<h6>测试成功<font color=\"green\" size=4>"
+                        + successCount + "</font>项，失败<font color=\"red\" size=4>"
+                        + (testResults.size() - successCount) + "</font>项</h6>");
+                stringBuilder.append("<br>");
+            }
+
+            MailServer.sendMail(this, "AutoTest Test Result", stringBuilder.toString(), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d(TAG, "send test result email failed");
+        }
     }
 }

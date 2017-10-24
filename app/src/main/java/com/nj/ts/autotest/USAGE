@@ -1,0 +1,15 @@
+    private void testSmbServer() {
+        SmbConfig.getInstance().setIp("192.168.191.1").setRootPath("/share/AutoTest");
+        SmbServer.downloadConfigFile(this, "config.xml");
+        SmbServer.uploadFile(this, 
+                SmbConfig.getInstance().getDownloadPath()+"config1.xml", 
+                SmbConfig.getInstance().getRootUrl()+"lala/lala/" + System.currentTimeMillis()+"hello1.xml");
+    }
+
+    private void testEmail() {
+        Log.d(TAG, "testEmail: ");
+        ArrayList<Attachment> attaches = new ArrayList<>();
+        Attachment a1 = new Attachment("a1.xml", SmbConfig.DEFAULT_DOWNLOAD_PATH + "config.xml");
+        attaches.add(a1);
+        MailServer.sendMail(this, "AutoTest First Email", "Hello Auto test", attaches);
+    }

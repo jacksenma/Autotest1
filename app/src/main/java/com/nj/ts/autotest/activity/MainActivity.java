@@ -1,10 +1,17 @@
 package com.nj.ts.autotest.activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,11 +26,18 @@ import com.alibaba.fastjson.JSON;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.ModuleAdapter;
 import com.nj.ts.autotest.adapter.SpinnerAdapter;
+import com.nj.ts.autotest.email.Attachment;
+import com.nj.ts.autotest.email.MailServer;
 import com.nj.ts.autotest.entity.Module;
 import com.nj.ts.autotest.entity.Project;
+import com.nj.ts.autotest.smb.SmbConfig;
+import com.nj.ts.autotest.smb.SmbServer;
+import com.nj.ts.autotest.util.ToastUtil;
 import com.nj.ts.autotest.util.Util;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -47,57 +61,41 @@ public class MainActivity extends AppCompatActivity {
     private Project mSelectProject;
 
 
+    private static final int MSG_DOWNLOAD_SUCCESS = 0x01;
+    private static final int MSG_DOWNLOAD_FAILED = 0x02;
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_DOWNLOAD_SUCCESS:
+                    readTestNode();
+                    break;
+                case MSG_DOWNLOAD_FAILED:
+                    ToastUtil.showShortToast(MainActivity.this, "配置文件下载失败");
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initData();
         initView();
+        registerBroadcast();
+//        downloadConfigFile();
+
         readTestNode();
+    }
 
-//        try {
-//            String dirPath = (Environment.getExternalStorageDirectory() + File.separator + "autotest" + File.separator + "omatest");
-//            File dir = new File(dirPath);
-//            if (!dir.exists()) {
-//                dir.mkdir();
-//            }
-//            File testResultFile = new File(dir.getAbsoluteFile(),"result.json");
-//            Log.d(TAG,"ruan " + testResultFile.getAbsolutePath());
-//            if (!testResultFile.exists()) {
-//                if (testResultFile.createNewFile()) {
-//                    FileOutputStream outStream = new FileOutputStream(testResultFile);
-//                    outStream.write(jsonArray.toJSONString().getBytes());
-//                    outStream.close();
-//                }
-//            }
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-
-
-//        try {
-//            File file = new File(Environment.getExternalStorageDirectory(),
-//                    "oma_test_config.json");
-//            BufferedReader br = new BufferedReader(new FileReader(file));
-//            String readLine = "";
-//            StringBuffer sb = new StringBuffer();
-//            while ((readLine = br.readLine()) != null) {
-//                sb.append(readLine);
-//            }
-//            br.close();
-//            System.out.println("读取成功：" + sb.toString());
-//
-//            JSONArray jsonArray = JSON.parseArray(sb.toString().trim());
-//
-//            System.out.println("读取成功：" + jsonArray.toJSONString());
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mReceiver);
     }
 
     private void initData() {
@@ -142,11 +140,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * 下载配置文件
+     */
+    private void downloadConfigFile() {
+        String path = SmbConfig.DEFAULT_DOWNLOAD_PATH + "node.json";
+//        File file = new File(path);
+//        if (file.exists()) {
+//            file.delete();
+//        }
+
+        SmbConfig sb = SmbConfig.getInstance();
+        sb.setIp("192.168.191.1").setRootPath("/share/AutoTest");
+        sb.setConfigName("node.json");
+        SmbServer.downloadConfigFile(this, "node.json");
+    }
+
+    /**
      * 读取节点配置数据
      */
     private void readTestNode() {
         try {
+//            String path = SmbConfig.DEFAULT_DOWNLOAD_PATH + "node.json";
+//            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(path), "UTF-8");
+
             InputStreamReader inputStreamReader = new InputStreamReader(getAssets().open("node.json"), "UTF-8");
+
             BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String line;
             StringBuilder stringBuilder = new StringBuilder();
@@ -305,5 +323,57 @@ public class MainActivity extends AppCompatActivity {
             result += Util.arrayListToString(selectModules, " , ");
         }
         mSelectedProjectTextView.setText(result);
+    }
+
+
+    /**
+     * 测试服务器
+     */
+    private void testSmbServer() {
+        SmbConfig sb = SmbConfig.getInstance();
+        sb.setIp("192.168.191.1").setRootPath("/share/AutoTest");
+        sb.setConfigName("node.json");
+        SmbServer.downloadConfigFile(this, "node.json");
+
+
+//        SmbServer.uploadFile(this,
+//                SmbConfig.getInstance().getDownloadPath()+"config1.xml",
+//                SmbConfig.getInstance().getRootUrl()+"lala/lala/" + System.currentTimeMillis()+"hello1.xml");
+    }
+
+    /**
+     * 测试邮件
+     */
+    private void testEmail() {
+        Log.d(TAG, "testEmail: ");
+        String path = SmbConfig.DEFAULT_DOWNLOAD_PATH + "node.json";
+        ArrayList<Attachment> attaches = new ArrayList<>();
+        Attachment a1 = new Attachment("a1.xml", path);
+        attaches.add(a1);
+        MailServer.sendMail(this, "AutoTest First Email", "Hello Auto test", attaches);
+    }
+
+    private void registerBroadcast() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(SmbServer.ACTION_DOWNLOAD_CONFIG_SUCCESS);
+        intentFilter.addAction(SmbServer.ACTION_DOWNLOAD_CONFIG_FAILED);
+        registerReceiver(mReceiver, intentFilter);
+    }
+
+    private DownloadBroadcastReceiver mReceiver = new DownloadBroadcastReceiver();
+
+    private class DownloadBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (!TextUtils.isEmpty(action)) {
+                if (action.equals(SmbServer.ACTION_DOWNLOAD_CONFIG_SUCCESS)) {
+                    mHandler.sendEmptyMessage(MSG_DOWNLOAD_SUCCESS);
+                } else if (action.equals(SmbServer.ACTION_DOWNLOAD_CONFIG_FAILED)) {
+                    mHandler.sendEmptyMessage(MSG_DOWNLOAD_FAILED);
+                }
+            }
+        }
     }
 }
