@@ -1,6 +1,6 @@
 package com.nj.ts.autotest.entity;
 
-public class RuanModule {
+public class Module {
     private String name;
     private boolean select;
     private boolean isAllSuccess;

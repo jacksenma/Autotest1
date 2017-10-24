@@ -14,8 +14,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.TestResultAdapter;
-import com.nj.ts.autotest.entity.RuanModule;
-import com.nj.ts.autotest.entity.RuanProject;
+import com.nj.ts.autotest.entity.Module;
+import com.nj.ts.autotest.entity.Project;
 import com.nj.ts.autotest.entity.TestResult;
 
 import java.util.ArrayList;
@@ -29,8 +29,8 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
     private Button mRetestButton;
     private Button mTestAloneButton;
 
-    private RuanProject mSelectProject;
-    private ArrayList<RuanModule> mModuleArrayList;
+    private Project mSelectProject;
+    private ArrayList<Module> mModuleArrayList;
 
     public static final String BUNDLE_KEY_MODULE = "module";
     public static final String BUNDLE_KEY_PROJECT = "project";
@@ -51,8 +51,8 @@ public class RuanTestResultActivity extends AppCompatActivity implements View.On
 
         Bundle bundle = getIntent().getExtras();
 
-        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), RuanProject.class);
-        mModuleArrayList = (ArrayList<RuanModule>) JSON.parseArray(bundle.getString(BUNDLE_KEY_MODULE), RuanModule.class);
+        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), Project.class);
+        mModuleArrayList = (ArrayList<Module>) JSON.parseArray(bundle.getString(BUNDLE_KEY_MODULE), Module.class);
         JSONObject jsonObject = JSON.parseObject(bundle.getString(BUNDLE_KEY_RESULT));
         Iterator iterator = jsonObject.keySet().iterator();
         while (iterator.hasNext()) {

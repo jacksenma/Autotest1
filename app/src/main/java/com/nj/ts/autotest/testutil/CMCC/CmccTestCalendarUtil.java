@@ -50,7 +50,7 @@ public class CmccTestCalendarUtil {
         };
     }
 
-    private TestResult searchDate() {
+    public TestResult searchDate() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
         testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
@@ -58,7 +58,7 @@ public class CmccTestCalendarUtil {
         return testResult;
     }
 
-    private TestResult addEvent() {
+    public TestResult addEvent() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
         testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
@@ -66,7 +66,7 @@ public class CmccTestCalendarUtil {
         return testResult;
     }
 
-    private TestResult addReminder() {
+    public TestResult addReminder() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
         testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
@@ -74,7 +74,7 @@ public class CmccTestCalendarUtil {
         return testResult;
     }
 
-    private TestResult delete() {
+    public TestResult delete() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
         testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);

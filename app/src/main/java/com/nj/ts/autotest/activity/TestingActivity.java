@@ -22,8 +22,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.TestingFunctionAdapter;
 import com.nj.ts.autotest.adapter.TestingModuleAdapter;
-import com.nj.ts.autotest.entity.RuanModule;
-import com.nj.ts.autotest.entity.RuanProject;
+import com.nj.ts.autotest.entity.Module;
+import com.nj.ts.autotest.entity.Project;
 import com.nj.ts.autotest.entity.TestResult;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestChromeUtil;
 import com.nj.ts.autotest.testutil.CMCC.CmccTestMmsUtil;
@@ -35,6 +35,7 @@ import com.nj.ts.autotest.testutil.MercurySprint.MercuryOmaTestUtil;
 import com.nj.ts.autotest.util.Constant;
 import com.nj.ts.autotest.util.ToastUtil;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -52,8 +53,8 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
 
     private Button mShowResultButton;
     private ProgressBar mProgressBar;
-    private RuanProject mSelectProject;
-    private ArrayList<RuanModule> mModuleArrayList;
+    private Project mSelectProject;
+    private ArrayList<Module> mModuleArrayList;
     private ArrayList<TestResult> mCurrentModuleFunctionTestResult;
 
     private HashMap<String, ArrayList<TestResult>> mTestResultMap;
@@ -94,10 +95,10 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
         mTestResultMap = new HashMap<>();
 
         Bundle bundle = getIntent().getExtras();
-        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), RuanProject.class);
+        mSelectProject = JSON.parseObject(bundle.getString(BUNDLE_KEY_PROJECT), Project.class);
         ArrayList<String> arrayList = bundle.getStringArrayList(BUNDLE_KEY_MODULE);
         for (int i = 0; i < arrayList.size(); i++) {
-            RuanModule module = new RuanModule();
+            Module module = new Module();
             module.setName(arrayList.get(i));
             if (i == 0) {
                 module.setSelect(true);
@@ -212,7 +213,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
                 }
 
                 for (int i = 0; i < mModuleArrayList.size(); i++) {
-                    RuanModule module = mModuleArrayList.get(i);
+                    Module module = mModuleArrayList.get(i);
                     if (module.isSelect()) {
                         ArrayList<TestResult> testResults = mTestResultMap.get(module.getName());
                         mCurrentModuleFunctionTestResult.clear();
@@ -229,6 +230,13 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
         mFunctionRecycleView.setLayoutManager(layoutManage);
         mFunctionRecycleView.setHasFixedSize(true);
         mTestFunctionAdapter = new TestingFunctionAdapter(mCurrentModuleFunctionTestResult, this);
+        mTestFunctionAdapter.setOnItemLongClickListener(new TestingFunctionAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Log.d(TAG, "ruan onItemLongClick and position is " + position);
+                testAlone(position);
+            }
+        });
         mFunctionRecycleView.setAdapter(mTestFunctionAdapter);
     }
 
@@ -238,7 +246,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
     private void sendTestNotification() {
         if (mSelectProject.getProject().equals("Cmcc")) {
             for (int i = 0; i < mModuleArrayList.size(); i++) {
-                RuanModule module = mModuleArrayList.get(i);
+                Module module = mModuleArrayList.get(i);
                 if (module.getName().equals(Constant.MODULE_CMSS_TEST_NODE)) {
                     CmccTestNodeUtil util = new CmccTestNodeUtil(this);
                     util.startTest();
@@ -255,7 +263,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
             }
         } else if (mSelectProject.getProject().equals("MercurySprint")) {
             for (int i = 0; i < mModuleArrayList.size(); i++) {
-                RuanModule module = mModuleArrayList.get(i);
+                Module module = mModuleArrayList.get(i);
                 if (module.getName().equals(Constant.MODULE_MERCURY_TEST_NODE)) {
                     MercuryNoteTestUtil util = new MercuryNoteTestUtil(this);
                     util.startTest();
@@ -273,7 +281,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
     private void refreshUi() {
         //刷新当前选中module的结果
         for (int i = 0; i < mModuleArrayList.size(); i++) {
-            RuanModule module = mModuleArrayList.get(i);
+            Module module = mModuleArrayList.get(i);
             if (module.isSelect()) {
                 ArrayList<TestResult> testResults = mTestResultMap.get(module.getName());
                 mCurrentModuleFunctionTestResult.clear();
@@ -285,7 +293,7 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
 
         //刷新左侧module的字体颜色
         for (int i = 0; i < mModuleArrayList.size(); i++) {
-            RuanModule module = mModuleArrayList.get(i);
+            Module module = mModuleArrayList.get(i);
             ArrayList<TestResult> testResults = mTestResultMap.get(module.getName());
             if (!testResults.isEmpty()) {
                 boolean isAllSuccess = true;
@@ -429,5 +437,105 @@ public class TestingActivity extends AppCompatActivity implements View.OnClickLi
 
             }
         }
+    }
+
+    private void testAlone(int position) {
+        String testItem = mCurrentModuleFunctionTestResult.get(position).getMethod();
+        Module module = null;
+        TestResult testResult = null;
+        for (int i = 0; i < mModuleArrayList.size(); i++) {
+            if (mModuleArrayList.get(i).isSelect()) {
+                module = mModuleArrayList.get(i);
+                break;
+            }
+        }
+
+        if (module.getName().equals("OMADMTest")) {
+            ToastUtil.showShortToast(this, "OMA 模块暂不支持单测");
+            return;
+        }
+        ToastUtil.showShortToast(this, "开始测试" + testItem + "方法");
+
+        if (mSelectProject.getProject().equals("Cmcc")) {
+            if (module.getName().equals(Constant.MODULE_CMSS_TEST_NODE)) {
+                CmccTestNodeUtil util = new CmccTestNodeUtil(this);
+                Method method = null;
+                try {
+                    Log.d(TAG, "ruan and item is " + testItem);
+                    method = util.getClass().getDeclaredMethod(testItem);
+                    testResult = (TestResult) method.invoke(util);
+                } catch (Exception e) {
+                    Log.d(TAG, "ruan exception is " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            } else if (module.getName().equals(Constant.MODULE_CMSS_TEST_CALENDAR)) {
+                CmccTestCalendarUtil util = new CmccTestCalendarUtil(this);
+                Method method = null;
+                try {
+                    Log.d(TAG, "ruan and item is " + testItem);
+                    method = util.getClass().getDeclaredMethod(testItem);
+                    testResult = (TestResult) method.invoke(util);
+                } catch (Exception e) {
+                    Log.d(TAG, "ruan exception is " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            } else if (module.getName().equals(Constant.MODULE_CMSS_TEST_CHROME)) {
+                CmccTestChromeUtil util = new CmccTestChromeUtil(this);
+                Method method = null;
+                try {
+                    Log.d(TAG, "ruan and item is " + testItem);
+                    method = util.getClass().getDeclaredMethod(testItem);
+                    testResult = (TestResult) method.invoke(util);
+                } catch (Exception e) {
+                    Log.d(TAG, "ruan exception is " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            } else if (module.getName().equals(Constant.MODULE_CMSS_TEST_CMMS)) {
+                CmccTestMmsUtil util = new CmccTestMmsUtil(this);
+                Method method = null;
+                try {
+                    Log.d(TAG, "ruan and item is " + testItem);
+                    method = util.getClass().getDeclaredMethod(testItem);
+                    testResult = (TestResult) method.invoke(util);
+                } catch (Exception e) {
+                    Log.d(TAG, "ruan exception is " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            }
+        } else if (mSelectProject.getProject().equals("MercurySprint")) {
+            if (module.getName().equals(Constant.MODULE_MERCURY_TEST_NODE)) {
+                MercuryNoteTestUtil util = new MercuryNoteTestUtil(this);
+                Method method = null;
+                try {
+                    Log.d(TAG, "ruan and item is " + testItem);
+                    method = util.getClass().getDeclaredMethod(testItem);
+                    testResult = (TestResult) method.invoke(util);
+                } catch (Exception e) {
+                    Log.d(TAG, "ruan exception is " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            } else if (module.getName().equals(Constant.MODULE_MERCURY_TEST_CALENDAR)) {
+                MercuryCalendarTestUtil util = new MercuryCalendarTestUtil(this);
+                Method method = null;
+                try {
+                    Log.d(TAG, "ruan and item is " + testItem);
+                    method = util.getClass().getDeclaredMethod(testItem);
+                    testResult = (TestResult) method.invoke(util);
+                } catch (Exception e) {
+                    Log.d(TAG, "ruan exception is " + e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            } else if (module.getName().equals("OMADMTest")) {
+                MercuryOmaTestUtil util = new MercuryOmaTestUtil(this);
+                util.startTest();
+            }
+        }
+
+        if (null != testResult) {
+            mCurrentModuleFunctionTestResult.get(position).setResultCode(testResult.getResultCode());
+            mCurrentModuleFunctionTestResult.get(position).setResultMessage(testResult.getResultMessage());
+            mTestResultMap.put(module.getName(), mCurrentModuleFunctionTestResult);
+        }
+        ToastUtil.showShortToast(this, testItem + "方法测试成功");
     }
 }

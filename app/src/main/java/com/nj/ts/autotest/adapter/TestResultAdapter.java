@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ts.autotest.R;
-import com.nj.ts.autotest.entity.RuanModule;
+import com.nj.ts.autotest.entity.Module;
 import com.nj.ts.autotest.entity.TestResult;
 
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     private Context mContext;
     private ArrayList<Object> mResults;
-    private ArrayList<RuanModule> mModuleArrayList;
+    private ArrayList<Module> mModuleArrayList;
 
-    public TestResultAdapter(ArrayList<RuanModule> moduleArrayList, ArrayList<Object> results, Context context) {
+    public TestResultAdapter(ArrayList<Module> moduleArrayList, ArrayList<Object> results, Context context) {
         this.mResults = results;
         this.mContext = context;
         this.mModuleArrayList = moduleArrayList;
@@ -47,7 +47,7 @@ public class TestResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         if (holder instanceof TestResultHeaderViewHolder) {
             ((TestResultHeaderViewHolder) holder).mProjectTextView.setText(String.valueOf(mResults.get(position)));
             for (int i = 0; i < mModuleArrayList.size(); i++) {
-                RuanModule module = mModuleArrayList.get(i);
+                Module module = mModuleArrayList.get(i);
                 if (module.getName().equals(mResults.get(position))) {
                     if (module.isAllSuccess()) {
                         ((TestResultHeaderViewHolder) holder).mProjectTextView.setTextColor(Color.GREEN);

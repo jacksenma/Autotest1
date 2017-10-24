@@ -40,7 +40,7 @@ public class CmccTestChromeUtil {
         };
     }
 
-    private TestResult open() {
+    public TestResult open() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
         testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
@@ -48,7 +48,7 @@ public class CmccTestChromeUtil {
         return testResult;
     }
 
-    private TestResult close() {
+    public TestResult close() {
         TestResult testResult = new TestResult();
         testResult.setMethod(Thread.currentThread().getStackTrace()[2].getMethodName());
         testResult.setResultCode(Constant.TEST_RESULT_SUCCESS);
@@ -56,7 +56,7 @@ public class CmccTestChromeUtil {
         return testResult;
     }
 
-    private TestResult openWebPage() {
+    public TestResult openWebPage() {
         for (int i = 0; i < 100000; i++) {
             for (int j = 0; j < 1000; j++) {
 

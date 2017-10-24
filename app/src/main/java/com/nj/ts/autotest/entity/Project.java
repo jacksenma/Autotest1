@@ -3,10 +3,10 @@ package com.nj.ts.autotest.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RuanProject implements Serializable {
+public class Project implements Serializable {
     private String project;
     private boolean select;
-    private ArrayList<RuanModule> module;
+    private ArrayList<Module> module;
 
     public String getProject() {
         return project;
@@ -16,11 +16,11 @@ public class RuanProject implements Serializable {
         this.project = project;
     }
 
-    public ArrayList<RuanModule> getModule() {
+    public ArrayList<Module> getModule() {
         return module;
     }
 
-    public void setModule(ArrayList<RuanModule> module) {
+    public void setModule(ArrayList<Module> module) {
         this.module = module;
     }
 

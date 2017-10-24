@@ -9,17 +9,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ts.autotest.R;
-import com.nj.ts.autotest.entity.RuanModule;
+import com.nj.ts.autotest.entity.Module;
 
 import java.util.ArrayList;
 
 public class TestingModuleAdapter extends RecyclerView.Adapter<TestingModuleAdapter.TestingModuleViewHolder> implements View.OnClickListener {
 
     private Context mContext;
-    private ArrayList<RuanModule> mModules;
+    private ArrayList<Module> mModules;
     private OnItemClickListener mOnItemClickListener = null;
 
-    public TestingModuleAdapter(ArrayList<RuanModule> modules, Context context) {
+    public TestingModuleAdapter(ArrayList<Module> modules, Context context) {
         this.mModules = modules;
         this.mContext = context;
     }
@@ -35,7 +35,7 @@ public class TestingModuleAdapter extends RecyclerView.Adapter<TestingModuleAdap
     @Override
     public void onBindViewHolder(TestingModuleViewHolder viewHolder, int position) {
         viewHolder.itemView.setTag(position);
-        RuanModule module = mModules.get(position);
+        Module module = mModules.get(position);
         viewHolder.mTextView.setText(module.getName());
         if (module.isSelect()) {
             viewHolder.itemView.setBackground(mContext.getResources().getDrawable(R.drawable.tab_item_sel_bg));

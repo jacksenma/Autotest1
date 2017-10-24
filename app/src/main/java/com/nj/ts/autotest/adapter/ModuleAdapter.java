@@ -8,17 +8,16 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.ts.autotest.R;
-import com.nj.ts.autotest.entity.RuanModule;
-import com.nj.ts.autotest.entity.RuanProject;
+import com.nj.ts.autotest.entity.Module;
 
 import java.util.List;
 
 public class ModuleAdapter extends BaseAdapter {
     private static final String TAG = SpinnerAdapter.class.getSimpleName();
     private Context mContext;
-    private List<RuanModule> mModuleList;
+    private List<Module> mModuleList;
 
-    public ModuleAdapter(Context context, List<RuanModule> moduleList) {
+    public ModuleAdapter(Context context, List<Module> moduleList) {
         mContext = context;
         mModuleList = moduleList;
     }
@@ -51,7 +50,7 @@ public class ModuleAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        RuanModule module = mModuleList.get(position);
+        Module module = mModuleList.get(position);
         viewHolder.itemTextView.setText(module.getName());
         viewHolder.itemCheckBox.setChecked(module.isSelect());
         return convertView;

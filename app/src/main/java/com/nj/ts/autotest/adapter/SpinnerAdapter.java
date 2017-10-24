@@ -2,28 +2,24 @@ package com.nj.ts.autotest.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.nj.ts.autotest.entity.RuanProject;
-import com.nj.ts.autotest.util.FontCache;
+import com.nj.ts.autotest.entity.Project;
 
 import java.util.List;
 
 public class SpinnerAdapter extends BaseAdapter {
     private static final String TAG = SpinnerAdapter.class.getSimpleName();
     private Context mContext;
-    private List<RuanProject> mProjects;
+    private List<Project> mProjects;
 
-    public SpinnerAdapter(Context context, List<RuanProject> projects) {
+    public SpinnerAdapter(Context context, List<Project> projects) {
         mContext = context;
         mProjects = projects;
     }
@@ -37,7 +33,7 @@ public class SpinnerAdapter extends BaseAdapter {
             convertView = inflater.inflate(android.R.layout.simple_spinner_item, parent, false);
         }
 
-        RuanProject project = mProjects.get(position);
+        Project project = mProjects.get(position);
         TextView text = (TextView) convertView.findViewById(android.R.id.text1);
         text.setText(project.getProject());
         text.setTextSize(24f);

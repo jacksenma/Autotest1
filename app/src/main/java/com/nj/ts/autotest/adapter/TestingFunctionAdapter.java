@@ -14,9 +14,10 @@ import com.nj.ts.autotest.util.Constant;
 
 import java.util.ArrayList;
 
-public class TestingFunctionAdapter extends RecyclerView.Adapter<TestingFunctionAdapter.TestingFunctionViewHolder> {
+public class TestingFunctionAdapter extends RecyclerView.Adapter<TestingFunctionAdapter.TestingFunctionViewHolder> implements View.OnLongClickListener {
     private Context mContext;
     private ArrayList<TestResult> mTestResules;
+    private OnItemLongClickListener mOnItemClickListener = null;
 
     public TestingFunctionAdapter(ArrayList<TestResult> testResults, Context context) {
         this.mTestResules = testResults;
@@ -27,11 +28,13 @@ public class TestingFunctionAdapter extends RecyclerView.Adapter<TestingFunction
     public TestingFunctionViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_testing_function, viewGroup, false);
         TestingFunctionViewHolder vh = new TestingFunctionViewHolder(view);
+        view.setOnLongClickListener(this);
         return vh;
     }
 
     @Override
     public void onBindViewHolder(TestingFunctionViewHolder viewHolder, int position) {
+        viewHolder.itemView.setTag(position);
         TestResult testResult = mTestResules.get(position);
 
         if (testResult.getResultCode() == Constant.TEST_RESULT_TESTING) {
@@ -58,6 +61,22 @@ public class TestingFunctionAdapter extends RecyclerView.Adapter<TestingFunction
     @Override
     public int getItemCount() {
         return mTestResules.size();
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
+        this.mOnItemClickListener = listener;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (mOnItemClickListener != null) {
+            mOnItemClickListener.onItemLongClick(v, (int) v.getTag());
+        }
+        return false;
+    }
+
+    public static interface OnItemLongClickListener {
+        void onItemLongClick(View view, int position);
     }
 
     public static class TestingFunctionViewHolder extends RecyclerView.ViewHolder {

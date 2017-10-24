@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +19,8 @@ import com.alibaba.fastjson.JSON;
 import com.example.ts.autotest.R;
 import com.nj.ts.autotest.adapter.ModuleAdapter;
 import com.nj.ts.autotest.adapter.SpinnerAdapter;
-import com.nj.ts.autotest.entity.RuanModule;
-import com.nj.ts.autotest.entity.RuanProject;
+import com.nj.ts.autotest.entity.Module;
+import com.nj.ts.autotest.entity.Project;
 import com.nj.ts.autotest.util.Util;
 
 import java.io.BufferedReader;
@@ -44,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AlertDialog.Builder builder;
 
-    private List<RuanProject> mProjects;
-    private RuanProject mSelectProject;
+    private List<Project> mProjects;
+    private Project mSelectProject;
 
 
     @Override
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        mProjects = new ArrayList<RuanProject>();
+        mProjects = new ArrayList<Project>();
     }
 
     private void initView() {
@@ -157,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             bufferedReader.close();
             inputStreamReader.close();
 
-            List<RuanProject> projects = JSON.parseArray(stringBuilder.toString(), RuanProject.class);
+            List<Project> projects = JSON.parseArray(stringBuilder.toString(), Project.class);
             mProjects.addAll(projects);
             mSelectProject = mProjects.get(0);
             mProjectAdapter.notifyDataSetChanged();
@@ -172,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param project
      */
-    private void selectProject(RuanProject project) {
+    private void selectProject(Project project) {
         for (int i = 0; i < mProjects.size(); i++) {
             mProjects.get(i).setSelect(false);
             for (int j = 0; j < mProjects.get(i).getModule().size(); j++) {
@@ -242,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 } else {
-                    RuanModule module = mSelectProject.getModule().get(position);
+                    Module module = mSelectProject.getModule().get(position);
                     module.setSelect(!module.isSelect());
 
                     boolean selectAllFlag = true;
